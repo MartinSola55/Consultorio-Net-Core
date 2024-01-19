@@ -1,0 +1,115 @@
+﻿@model Consultorio.Models.ViewModels.ObrasSociales.IndexViewModel
+@using System.Globalization
+@{
+    ViewData["Title"] = "Obras sociales";
+}
+
+<link href="~/lib/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet">
+<link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
+
+<script src="~/lib/datatables/datatables.min.js"></script>
+<script src="~/lib/moment/moment-with-locales.js"></script>
+<script src="~/lib/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+<script src="~/js/custom/obrasSociales/index.js"></script>
+
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Obras sociales</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
+                <li class="breadcrumb-item active">Obras sociales</li>
+            </ol>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="modalCreate" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div id="formContainer" class="modal-dialog">
+            <form role="form" class="" method="POST" asp-area="" asp-controller="ObrasSociales" asp-action="Create" id="form-create" autocomplete="off">
+                <input type="hidden" name="NewObraSocial.ID" value="" />
+                @Html.AntiForgeryToken()
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 id="modalTitle" class="modal-title"></h4>
+                        <button type="button" class="close" id="btnCloseModalCreate" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-column">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="NewObraSocial.Nombre" class="mb-0"></label>
+                                        <input asp-for="NewObraSocial.Nombre" class="form-control" required />
+                                        <span asp-validation-for="NewObraSocial.Nombre" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
+                        <button id="btnSendModal" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- End Modal -->
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-row justify-content-between">
+                        <h2 class="card-title">Listado de obras sociales</h2>
+                        <button type="button" onclick="add()" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar obra social</button>
+                    </div>
+                    <div class="table-responsive m-t-10">
+                        <table id="ObrasSocialesTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="col-8">Nombre</th>
+                                    <th class="col-2">Habilitada</th>
+                                    <th class="col-2">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_body">
+                                @foreach (var item in Model.ObraSociales)
+                                {
+                                    <tr data-id="@item.ID">
+                                        <td>
+                                            @Html.DisplayFor(x => item.Nombre)
+                                        </td>
+                                        <td class="text-center">
+                                            @{
+                                                if (item.Habilitada)
+                                                {
+                                                    <i class="bi bi-check2" style="font-size: 1.5rem"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-x-lg" style="font-size: 1.3rem"></i>
+                                                }
+                                            }
+                                        </td>
+                                        <td class='d-flex flex-row justify-content-center'>
+                                            <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                                            <button type='button' class='btn @(item.Habilitada ? "btn-danger" : "btn-info") btn-rounded btn-sm ml-2' onclick='changeState(@item.ID, "@item.Habilitada")'><i class='bi @(item.Habilitada ? "bi-toggle-on" : "bi-toggle-off")'></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <form id="form-state" method="POST" asp-area="" asp-controller="ObrasSociales" asp-action="ChangeState">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

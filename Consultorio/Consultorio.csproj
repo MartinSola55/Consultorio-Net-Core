@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>921ce074-8c3e-4f13-8457-f147212bf8fe</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\js\NewFolder\**" />
+    <Content Remove="wwwroot\js\NewFolder\**" />
+    <EmbeddedResource Remove="wwwroot\js\NewFolder\**" />
+    <None Remove="wwwroot\js\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\icons\font-awesome\webfonts\fa-brands-400.svg" />
+    <None Include="wwwroot\css\icons\font-awesome\webfonts\fa-regular-400.svg" />
+    <None Include="wwwroot\css\icons\font-awesome\webfonts\fa-solid-900.svg" />
+    <None Include="wwwroot\css\icons\linea-icons\fonts\linea-arrows-10.svg" />
+    <None Include="wwwroot\css\icons\linea-icons\fonts\linea-basic-10.svg" />
+    <None Include="wwwroot\css\icons\linea-icons\fonts\linea-basic-elaboration-10.svg" />
+    <None Include="wwwroot\css\icons\linea-icons\fonts\linea-ecommerce-10.svg" />
+    <None Include="wwwroot\css\icons\linea-icons\fonts\linea-music-10.svg" />
+    <None Include="wwwroot\css\icons\linea-icons\fonts\linea-software-10.svg" />
+    <None Include="wwwroot\css\icons\linea-icons\fonts\linea-weather-10.svg" />
+    <None Include="wwwroot\css\icons\material-design-iconic-font\css\materialdesignicons.min.css.map" />
+    <None Include="wwwroot\css\icons\material-design-iconic-font\fonts\materialdesignicons-webfontdc99.svg" />
+    <None Include="wwwroot\css\icons\simple-line-icons\fonts\Simple-Line-Icons4c82.svg" />
+    <None Include="wwwroot\css\icons\themify-icons\fonts\themify9f24.svg" />
+    <None Include="wwwroot\css\icons\weather-icons\fonts\weathericons-regular-webfont.svg" />
+    <None Include="wwwroot\lib\bootstrap-material-datetimepicker\js\bootstrap-material-datetimepicker.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>
