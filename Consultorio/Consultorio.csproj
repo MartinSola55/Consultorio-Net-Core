@@ -31,6 +31,7 @@
     <None Include="wwwroot\css\icons\themify-icons\fonts\themify9f24.svg" />
     <None Include="wwwroot\css\icons\weather-icons\fonts\weathericons-regular-webfont.svg" />
     <None Include="wwwroot\lib\bootstrap-material-datetimepicker\js\bootstrap-material-datetimepicker.js" />
+    <None Include="wwwroot\lib\daterangepicker\daterangepicker.js" />
   </ItemGroup>
 
   <ItemGroup>

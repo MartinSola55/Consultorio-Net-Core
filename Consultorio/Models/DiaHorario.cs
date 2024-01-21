@@ -15,9 +15,11 @@ namespace Consultorio.Models
         public short HorarioID { set; get; }
 
         [Required(ErrorMessage = "Debes seleccionar un día")]
+        [DataType(DataType.Date)]
         public DateTime Dia { set; get; }
 
-        public bool Disponible { set; get; }
+        [DefaultValue(true)]
+        public bool Disponible { set; get; } = true;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow.AddHours(-3);
 

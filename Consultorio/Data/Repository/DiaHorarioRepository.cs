@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Consultorio.Data.Repository.IRepository;
 using Consultorio.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Consultorio.Data.Repository
 {
@@ -36,7 +37,25 @@ namespace Consultorio.Data.Repository
 
         public List<DiaHorario> GetHorariosByDate(DateTime date)
         {
-            throw new NotImplementedException();
+            List<DiaHorario> dias = [];
+            List<DiaHorario> diaHorarios = [.. _db.DiaHorario.Where(x => x.Dia.Date == date.Date).Include(x => x.Horario) ];
+            foreach (Horario horario in _db.Horario.ToList())
+            {
+                if (diaHorarios.Any(x => x.HorarioID == horario.ID))
+                {
+                    dias.Add(diaHorarios.First(x => x.HorarioID == horario.ID));
+                }
+                else
+                {
+                    dias.Add(new DiaHorario
+                    {
+                        Horario = horario,
+                        Disponible = false,
+                    });
+                }
+            }
+
+            return dias;
         }
 
     }

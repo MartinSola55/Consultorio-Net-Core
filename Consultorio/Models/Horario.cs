@@ -11,7 +11,9 @@ namespace Consultorio.Models
         [Required(ErrorMessage = "Debes seleccionar una hora")]
         [RegularExpression("^([1-9]|1[0-3])+$", ErrorMessage = "Debes seleccionar una hora válida")]
         public short ID { set; get; }
-        public DateTime Hora { set; get; }
+
+        [DataType(DataType.Time)]
+        public TimeOnly Hora { set; get; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow.AddHours(-3);
 
@@ -19,6 +21,7 @@ namespace Consultorio.Models
 
         public DateTime? DeletedAt { get; set; }
 
+        [NotMapped]
         public string HoraString { get; set; } = null!;
     }
 }

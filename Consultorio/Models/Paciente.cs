@@ -50,8 +50,6 @@ namespace Consultorio.Models
 
         public DateTime? DeletedAt { get; set; }
 
-        public IEnumerable<Turno> Turnos { get; set; } = null!;
-
         public IEnumerable<HistoriaClinica> HistoriasClinicas { get; set; } = null!;
 
         public virtual ObraSocial ObraSocial { set; get; } = null!;

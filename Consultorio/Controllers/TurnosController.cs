@@ -28,7 +28,7 @@ namespace Consultorio.Controllers
             {
                 IndexViewModel viewModel = new()
                 {
-                    Turnos = _workContainer.Turno.GetAll(includeProperties: "Persona, DiaHorario, Perosna.ObraSocial, DiaHorario.Horario"),
+                    Turnos = _workContainer.Turno.GetAll(includeProperties: "Persona, DiaHorario, Persona.ObraSocial, DiaHorario.Horario"),
                     Horarios = _workContainer.DiaHorario.GetHorariosByDate(DateTime.UtcNow.AddHours(-3)),
                 };
                 return View(viewModel);
@@ -38,6 +38,56 @@ namespace Consultorio.Controllers
                 return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
             }
 
+        }
+
+        [HttpGet]
+        [ActionName("SearchByDate")]
+        public IActionResult SearchByDate(string dateString)
+        {
+            try
+            {
+                DateTime date = DateTime.Parse(dateString);
+                IEnumerable<Turno> turnos = _workContainer.Turno.GetAll(x => x.DiaHorario.Dia.Date == date.Date, includeProperties: "Persona, DiaHorario, Persona.ObraSocial, DiaHorario.Horario").OrderBy(x => x.DiaHorario.Horario);
+                List<DiaHorario> horarios = _workContainer.DiaHorario.GetHorariosByDate(date);
+                List<object> data = [];
+                foreach (DiaHorario diaHorario in horarios)
+                {
+                    if (turnos.Any(x => x.DiaHorario.HorarioID == diaHorario.HorarioID))
+                    {
+                        Turno turno = turnos.First(x => x.DiaHorario.HorarioID == diaHorario.HorarioID);
+                        data.Add(new
+                        {
+                            nombre = turno.Persona.Nombre,
+                            apellido = turno.Persona.Apellido,
+                            obraSocial = turno.Persona.ObraSocial.Nombre,
+                            telefono = turno.Persona.Telefono,
+                            hora = turno.DiaHorario.Horario.Hora.ToString("HH:mm"),
+                            disponible = false,
+                        });
+                    } else
+                    {
+                        data.Add(new
+                        {
+                            nombre = "-",
+                            apellido = "-",
+                            obraSocial = "-",
+                            telefono = "-",
+                            hora = diaHorario.Horario.Hora.ToString("HH:mm"),
+                            disponible = diaHorario.Disponible
+                        });
+                    }
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data
+                });
+            }
+            catch (Exception)
+            {
+                return CustomBadRequest(title: "No se encontraron los turnos", message: "Intente nuevamente o comuníquese para soporte");
+            }
         }
     }
 }

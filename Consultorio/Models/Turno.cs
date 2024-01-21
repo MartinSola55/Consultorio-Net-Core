@@ -12,7 +12,7 @@ namespace Consultorio.Models
         public long ID { set; get; }
 
         [Required(ErrorMessage = "Debes añadir una persona")]
-        public long PerosnaID { set; get; }
+        public long PersonaID { set; get; }
 
         [Required(ErrorMessage = "Debes añadir un día y un horario")]
         public long DiaHorarioID { set; get; }
