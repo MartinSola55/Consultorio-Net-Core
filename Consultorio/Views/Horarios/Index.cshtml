@@ -1,0 +1,62 @@
+﻿@model Consultorio.Models.ViewModels.Horarios.IndexViewModel
+@using System.Globalization
+@{
+    ViewData["Title"] = "Horarios";
+}
+
+<link href="~/lib/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet">
+<link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
+
+<script src="~/lib/datatables/datatables.min.js"></script>
+<script src="~/lib/moment/moment-with-locales.js"></script>
+<script src="~/lib/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+<script src="~/js/custom/obrasSociales/index.js"></script>
+
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Horarios</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
+                <li class="breadcrumb-item active">Horarios</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-row justify-content-between">
+                        <h2 class="card-title">Listado de horarios</h2>
+                    </div>
+                    <div class="table-responsive m-t-10">
+                        <table id="HorariosTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Seleccionar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_body">
+                                @foreach (var item in Model.Horarios)
+                                {
+                                    <tr data-id="@item.ID">
+                                        <td class="text-center">@item.Hora.ToString("HH:mm")</td>
+                                        <td class="text-center">
+                                            <input id="check_@item.ID" type="checkbox" class="form-check" />
+                                            <label for="check_@item.ID" class="mb-0 p-0 mt-2"></label>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <form id="form-state" method="POST" asp-area="" asp-controller="Horarios" asp-action="Save">
+                        @Html.AntiForgeryToken()
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

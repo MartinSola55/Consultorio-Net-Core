@@ -17,12 +17,14 @@ namespace Consultorio.Data.Repository
             ObraSocial = new ObraSocialRepository(_db);
             Turno = new TurnoRepository(_db);
             DiaHorario = new DiaHorarioRepository(_db);
+            Horario = new HorarioRepository(_db);
         }
 
         public IApplicationUserRepository ApplicationUser { get; private set; }
         public IObraSocialRepository ObraSocial { get; private set; }
         public ITurnoRepository Turno { get; private set; }
         public IDiaHorarioRepository DiaHorario { get; private set; }
+        public IHorarioRepository Horario { get; private set; }
 
         public void BeginTransaction()
         {
