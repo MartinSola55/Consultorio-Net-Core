@@ -4,12 +4,12 @@
     ViewData["Title"] = "Horarios";
 }
 
-<link href="~/lib/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet">
+<link href="~/lib/daterangepicker/daterangepicker.css" rel="stylesheet">
 <link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
 
 <script src="~/lib/datatables/datatables.min.js"></script>
 <script src="~/lib/moment/moment-with-locales.js"></script>
-<script src="~/lib/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+<script src="~/lib/daterangepicker/daterangepicker.js"></script>
 <script src="~/js/custom/obrasSociales/index.js"></script>
 
 <div class="container-fluid">
@@ -27,15 +27,22 @@
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-body">
-                    <div class="d-flex flex-row justify-content-between">
-                        <h2 class="card-title">Listado de horarios</h2>
+                    <div class="row d-flex flex-row justify-content-between">
+                        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                            <input id="DatePicker" type="text" class="form-control" style="width: 250px;">
+                        </div>
+                        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end mt-3 mt-sm-0">
+                            <input type="checkbox" id="checkAll" onclick="checkAll(this)" />
+                            <label for="checkAll" class="mb-0 mt-2">Seleccionar todos</label>
+                        </div>
                     </div>
+                    <hr />
                     <div class="table-responsive m-t-10">
                         <table id="HorariosTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Hora</th>
-                                    <th>Seleccionar</th>
+                                    <th class="text-center">Hora</th>
+                                    <th class="text-center">Seleccionar</th>
                                 </tr>
                             </thead>
                             <tbody id="table_body">
@@ -44,7 +51,8 @@
                                     <tr data-id="@item.ID">
                                         <td class="text-center">@item.Hora.ToString("HH:mm")</td>
                                         <td class="text-center">
-                                            <input id="check_@item.ID" type="checkbox" class="form-check" />
+                                            <input id="check_@item.ID" name="horarioCheckBox" type="checkbox"
+                                                class="form-check" />
                                             <label for="check_@item.ID" class="mb-0 p-0 mt-2"></label>
                                         </td>
                                     </tr>
@@ -52,11 +60,91 @@
                             </tbody>
                         </table>
                     </div>
-                    <form id="form-state" method="POST" asp-area="" asp-controller="Horarios" asp-action="Save">
+                    <div class="d-flex justify-content-end">
+                        <button onclick="save()" class="btn btn-info btn-rounded">Guardar</button>
+                    </div>
+                    <form id="form-save" method="POST" asp-area="" asp-controller="Horarios" asp-action="Save">
                         @Html.AntiForgeryToken()
+                        @Html.Hidden("horarios", "")
+                        @Html.Hidden("dateFrom", "")
+                        @Html.Hidden("dateTo", "")
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function checkAll(e) {
+        let checkboxes = $('input[type="checkbox"]');
+        if (e.checked) {
+            for (let i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = true;
+            }
+        } else {
+            for (let i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = false;
+            }
+        }
+    }
+    moment.locale('es');
+    $('#DatePicker').daterangepicker({
+        ranges: {
+            'Hoy': [moment(), moment()],
+            'Este mes': [moment().startOf('month'), moment().endOf('month')],
+            'Siguiente mes': [moment().add(1, 'month').startOf('month'), moment().add(1, 'month').endOf('month')],
+            'Siguientes 2 meses': [moment().add(1, 'month').startOf('month'), moment().add(2, 'month').endOf('month')],
+            'Siguientes 3 meses': [moment().add(1, 'month').startOf('month'), moment().add(3, 'month').endOf('month')],
+        },
+        locale: {
+            applyLabel: "Aceptar",
+            cancelLabel: 'Cancelar',
+            customRangeLabel: 'Seleccionar rango',
+        },
+        applyClass: "btn-info",
+    });
+
+    function save() {
+        let checkboxes = $('input[name="horarioCheckBox"]:checked');
+        let ids = [];
+        for (let i = 0; i < checkboxes.length; i++) {
+            ids.push(checkboxes[i].id.split('_')[1]);
+        }
+        let date = $('#DatePicker').val().split(' - ');
+        let start = date[0];
+        let end = date[1];
+        $('#horarios').val(ids);
+        $('#dateFrom').val(start);
+        $('#dateTo').val(end);
+
+        let form = $("#form-save");
+        $.ajax({
+            url: $(form).attr('action'),
+            method: $(form).attr('method'),
+            data: $(form).serialize(),
+            success: function (response) {
+                Swal.fire({
+                    title: response.message,
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#1e88e5',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                });
+            },
+            error: function (errorThrown) {
+                Swal.fire({
+                    icon: 'error',
+                    title: errorThrown.responseJSON.title,
+                    html: errorThrown.responseJSON.message + "<br/>" + errorThrown.responseJSON.error,
+                    confirmButtonColor: '#1e88e5',
+                });
+            }
+        });
+    }
+</script>

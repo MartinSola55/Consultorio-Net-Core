@@ -3,6 +3,7 @@ using Consultorio.Data.Repository;
 using Consultorio.Models;
 using Microsoft.AspNetCore.Mvc;
 using Consultorio.Models.ViewModels.Horarios;
+using NuGet.Common;
 
 namespace Consultorio.Controllers
 {
@@ -37,6 +38,26 @@ namespace Consultorio.Controllers
                 return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
             }
 
+        }
+
+        [HttpPost]
+        [ActionName("Save")]
+        public IActionResult Save(string horarios, string dateFrom, string dateTo)
+        {
+            try
+            {
+                short[] ids = [.. horarios.Split(',').Select(x => short.Parse(x))];
+                _workContainer.DiaHorario.SaveNew(ids, dateFrom, dateTo);
+                return Json(new
+                {
+                    success = true,
+                    message = "Se han guardado los horarios correctamente",
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "Error", message: "No se ha podido guardar los horarios", error: e.Message);
+            }
         }
     }
 }

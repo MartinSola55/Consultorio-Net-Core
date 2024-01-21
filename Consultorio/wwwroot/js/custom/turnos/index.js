@@ -3,6 +3,11 @@ $(document).ready(function () {
     $('#TurnosDatePicker').daterangepicker({
         singleDatePicker: true,
         showDropdowns: true,
+        isInvalidDate: function (date) {
+            if (date.day() == 1 || date.day() == 2 || date.day() == 3 || date.day() == 5)
+                return false;
+            return true;
+        },
     }); 
     $('#TurnosDatePicker').on('change', function () {
         searchTurnos($(this).val());
