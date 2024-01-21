@@ -1,0 +1,91 @@
+﻿@model Consultorio.Models.ViewModels.Turnos.IndexViewModel
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<link href="~/lib/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet">
+<link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
+
+<script src="~/lib/datatables/datatables.min.js"></script>
+<script src="~/lib/moment/moment-with-locales.js"></script>
+<script src="~/lib/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+<script src="~/js/custom/home/admin/index.js"></script>
+
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Inicio</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active">Inicio</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-row mr-auto">
+                        <h3 class="my-auto card-title">Turnos del día</h3>
+                        <input type="text" class="form-control ml-3 my-auto" id="TurnosDatePicker" name="date"
+                            value='@DateTime.UtcNow.AddHours(-3).ToString("dd/MM/yyyy")'
+                            style="max-width: fit-content;" />
+                    </div>
+                    <div class="table-responsive m-t-20">
+                        <table id="turnosTable" class="table stylish-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Obra social</th>
+                                    <th>Teléfono</th>
+                                    <th>Hora</th>
+                                    <th>Disponible</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (DiaHorario horario in Model.Horarios.OrderBy(x => x.Horario.Hora))
+                                {
+                                    if (Model.Turnos.Any(x => x.DiaHorario.HorarioID == horario.HorarioID))
+                                    {
+                                        Turno turno = Model.Turnos.First(x => x.DiaHorario.HorarioID == horario.HorarioID);
+                                        <tr>
+                                            <td>@Html.DisplayFor(x => turno.Persona.Nombre)</td>
+                                            <td>@Html.DisplayFor(x => turno.Persona.Apellido)</td>
+                                            <td>@Html.DisplayFor(x => turno.Persona.ObraSocial.Nombre)</td>
+                                            <td>@Html.DisplayFor(x => turno.Persona.Telefono)</td>
+                                            <td>@Html.DisplayFor(x => turno.DiaHorario.Horario.Hora)</td>
+                                            <td><i class="bi bi-x-lg" style="font-size: 1.3rem"></i></td>
+                                            <td>BTN</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td><i class="bi bi-check2" style="font-size: 1.5rem"></i></td>
+                                            <td>BTN</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .clickable {
+        cursor: pointer;
+    }
+</style>

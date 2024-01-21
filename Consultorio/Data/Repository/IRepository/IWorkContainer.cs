@@ -10,6 +10,8 @@ namespace Consultorio.Data.Repository.IRepository
         // Agregar los repositorios
         IApplicationUserRepository ApplicationUser { get; }
         IObraSocialRepository ObraSocial { get; }
+        ITurnoRepository Turno { get; }
+        IDiaHorarioRepository DiaHorario { get; }
 
         void BeginTransaction();
         void Commit();

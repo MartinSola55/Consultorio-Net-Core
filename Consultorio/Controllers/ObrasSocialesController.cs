@@ -3,8 +3,6 @@ using Consultorio.Models;
 using Consultorio.Models.ViewModels.ObrasSociales;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography.Xml;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Consultorio.Controllers
 {
