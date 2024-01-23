@@ -81,6 +81,26 @@ namespace Consultorio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ActionName("UpdateHC")]
+        public IActionResult UpdateHC(HistoriaClinica historiaClinica)
+        {
+            try
+            {
+                _workContainer.Paciente.UpdateHC(historiaClinica);
+                return Json(new
+                {
+                    success = true,
+                    message = "La historia clínica se actualizó correctamente",
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "Error al actualizar la historia clínica", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [ActionName("SaveHC")]
         public IActionResult SaveHC(HistoriaClinica historiaClinica)
         {

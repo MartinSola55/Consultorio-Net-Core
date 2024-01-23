@@ -178,10 +178,10 @@
                         @foreach (var item in Model.Paciente.HistoriasClinicas.OrderByDescending(x => x.Fecha).ThenByDescending(x => x.Paciente.CreatedAt))
                         {
                             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                <div class="card card-outline-inverse">
+                                <div class="card card-outline-inverse" data-id="@item.ID">
                                     <div class="card-header">
-                                        <h4 class="m-b-0 text-white">
-                                            @item.Fecha.ToString("dd/MM/yyyy")
+                                        <h4 class="m-b-0 text-white d-flex flex-row">
+                                            <span class="dateHC">@item.Fecha.ToString("dd/MM/yyyy")</span>
                                             <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editHC(@item.ID)"><i class="bi bi-pencil-square text-white"></i></button>
                                         </h4>
                                     </div>
@@ -201,6 +201,12 @@
             @Html.Hidden("pacienteID", Model.Paciente.ID)
             @Html.Hidden("datoToUpdate", "")
             @Html.Hidden("datoValue", "")
+        </form>
+        <form id="form-editHC" asp-area="" asp-controller="Pacientes" asp-action="UpdateHC" method="post">
+            @Html.AntiForgeryToken()
+            @Html.Hidden("ID", "")
+            @Html.Hidden("Fecha", "")
+            @Html.Hidden("Descripcion", "")
         </form>
     </div>
 </div>

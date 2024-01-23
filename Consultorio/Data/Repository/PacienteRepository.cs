@@ -82,5 +82,16 @@ namespace Consultorio.Data.Repository
             paciente.UpdatedAt = DateTime.UtcNow.AddHours(-3);
             _db.SaveChanges();
         }
+
+        public void UpdateHC(HistoriaClinica historiaClinica)
+        {
+            var hc = _db.HistoriaClinica.FirstOrDefault(x => x.ID == historiaClinica.ID) ?? throw new Exception("No se ha encontrado la historia clínica");
+            var paciente = _db.Paciente.FirstOrDefault(x => x.ID == hc.PacienteID) ?? throw new Exception("No se ha encontrado el paciente");
+            hc.UpdatedAt = DateTime.UtcNow.AddHours(-3);
+            paciente.UpdatedAt = DateTime.UtcNow.AddHours(-3);
+            hc.Descripcion = historiaClinica.Descripcion;
+            hc.Fecha = historiaClinica.Fecha;
+            _db.SaveChanges();
+        }
     }
 }

@@ -11,6 +11,7 @@ namespace Consultorio.Data.Repository.IRepository
     {
         void Update(Paciente paciente);
         void UpdateDatos(string datoToUpdate, string datoValue, long id);
+        void UpdateHC(HistoriaClinica historiaClinica);
         void SoftDelete(long id);
         bool IsDuplicated(Paciente paciente);
         long AddHC(HistoriaClinica historiaClinica);
