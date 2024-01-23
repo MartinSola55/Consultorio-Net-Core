@@ -3,6 +3,12 @@
 
 @{
     ViewData["Title"] = "Pacientes";
+    DateTime today = DateTime.Now.AddHours(-3);
+    int edad = today.Year - Model.Paciente.FechaNacimiento.Year;
+    if (Model.Paciente.FechaNacimiento.Date > today.AddYears(-edad))
+    {
+        edad--;
+    }
 }
 
 <link href="~/lib/daterangepicker/daterangepicker.css" rel="stylesheet">
@@ -124,7 +130,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label class="control-label text-md-right col-5">Fecha nac: </label>
+                                                        <label class="control-label text-md-right col-5">Fecha nac (@edad años): </label>
                                                         <div class="col-7 pr-0">
                                                             <p class="form-control-static d-flex flex-row">
                                                                 <b id="pacienteFechaNacimiento">@Model.Paciente.FechaNacimiento.ToString("dd/MM/yyyy")</b>
