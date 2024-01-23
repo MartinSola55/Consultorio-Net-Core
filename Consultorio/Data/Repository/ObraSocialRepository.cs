@@ -17,7 +17,7 @@ namespace Consultorio.Data.Repository
         {
             IEnumerable<SelectListItem> obrasSociales = new List<SelectListItem>
             {
-                new() { Value = "", Text = "Seleccione un usuario", Disabled = true, Selected = true }
+                new() { Value = "", Text = "Seleccione una obra social", Disabled = true, Selected = true }
             };
             return obrasSociales.Concat(_db.ObraSocial.Where(x => x.Habilitada).OrderBy(x => x.Nombre).Select(i => new SelectListItem()
             {

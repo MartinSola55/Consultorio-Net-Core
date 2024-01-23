@@ -46,12 +46,36 @@ namespace Consultorio.Controllers
         {
             try
             {
-                Paciente paciente = _workContainer.Paciente.GetFirstOrDefault(p => p.ID == id, includeProperties: "ObraSocial, HistoriasClinicas");
-                return View(paciente);
+                DetallesViewModel viewModel = new()
+                {
+                    Paciente = _workContainer.Paciente.GetFirstOrDefault(p => p.ID == id, includeProperties: "ObraSocial, HistoriasClinicas"),
+                    ObraSociales = _workContainer.ObraSocial.GetDropDownList(),
+                };
+                return View(viewModel);
             }
             catch (Exception)
             {
                 return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("UpdateDatos")]
+        public IActionResult UpdateDatos(string datoToUpdate, string datoValue, long pacienteID)
+        {
+            try
+            {
+                _workContainer.Paciente.UpdateDatos(datoToUpdate, datoValue, pacienteID);
+                return Json(new
+                {
+                    success = true,
+                    message = "El campo se actualizó correctamente",
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "Error al actualizar el campo", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
             }
         }
 

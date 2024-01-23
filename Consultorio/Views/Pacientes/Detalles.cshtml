@@ -1,4 +1,4 @@
-﻿@model Consultorio.Models.Paciente
+﻿@model Consultorio.Models.ViewModels.Pacientes.DetallesViewModel
 @using System.Globalization
 
 @{
@@ -11,6 +11,7 @@
 <script src="~/lib/datatables/datatables.min.js"></script>
 <script src="~/lib/moment/moment-with-locales.js"></script>
 <script src="~/lib/daterangepicker/daterangepicker.js"></script><script src="~/js/custom/pacientes/index.js"></script>
+<script src="~/js/custom/pacientes/detalles.js"></script>
 
 <div class="container-fluid">
     <div class="row page-titles">
@@ -41,9 +42,11 @@
                                                     <div class="form-group row">
                                                         <label class="control-label text-md-right col-5" style="font-size: 20px">Nombre:</label>
                                                         <div class="col-7 pr-0">
-                                                            <p class="form-control-static" style="font-size: 20px">
-                                                                <b>@Html.DisplayFor(x => x.Nombre)</b>
-                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editNombre()"><i class="bi bi-pencil-square"></i></button>
+                                                            <p class="form-control-static d-flex flex-row" style="font-size: 20px">
+                                                                <b id="pacienteNombre">@Html.DisplayFor(x => x.Paciente.Nombre)</b>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editDatos('Nombre', this)"><i class="bi bi-pencil-square"></i></button>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Nombre', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
+                                                                <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -52,9 +55,11 @@
                                                     <div class="form-group row">
                                                         <label class="control-label text-md-right col-5" style="font-size: 20px">Apellido:</label>
                                                         <div class="col-7 pr-0">
-                                                            <p class="form-control-static" style="font-size: 20px">
-                                                                <b>@Html.DisplayFor(x => x.Apellido)</b>
-                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editApellido()"><i class="bi bi-pencil-square"></i></button>
+                                                            <p class="form-control-static d-flex flex-row" style="font-size: 20px">
+                                                                <b id="pacienteApellido">@Html.DisplayFor(x => x.Paciente.Apellido)</b>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editDatos('Apellido', this)"><i class="bi bi-pencil-square"></i></button>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Apellido', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
+                                                                <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -65,9 +70,11 @@
                                                     <div class="form-group row">
                                                         <label class="control-label text-md-right col-5">Teléfono:</label>
                                                         <div class="col-7 pr-0">
-                                                            <p class="form-control-static">
-                                                                @Html.DisplayFor(x => x.Telefono)
-                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editTelefono()"><i class="bi bi-pencil-square"></i></button>
+                                                            <p class="form-control-static d-flex flex-row">
+                                                                <b id="pacienteTelefono">@Html.DisplayFor(x => x.Paciente.Telefono)</b>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editDatos('Telefono', this)"><i class="bi bi-pencil-square"></i></button>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Telefono', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
+                                                                <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -76,9 +83,11 @@
                                                     <div class="form-group row">
                                                         <label class="control-label text-md-right col-5">Dirección:</label>
                                                         <div class="col-7 pr-0">
-                                                            <p class="form-control-static">
-                                                                @Html.DisplayFor(x => x.Direccion)
-                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editDireccion()"><i class="bi bi-pencil-square"></i></button>
+                                                            <p class="form-control-static d-flex flex-row">
+                                                                <b id="pacienteDireccion">@Html.DisplayFor(x => x.Paciente.Direccion)</b>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editDatos('Direccion', this)"><i class="bi bi-pencil-square"></i></button>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Direccion', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
+                                                                <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -89,9 +98,11 @@
                                                     <div class="form-group row">
                                                         <label class="control-label text-md-right col-5">Localidad:</label>
                                                         <div class="col-7 pr-0">
-                                                            <p class="form-control-static">
-                                                                @Html.DisplayFor(x => x.Localidad)
-                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editTelefono()"><i class="bi bi-pencil-square"></i></button>
+                                                            <p class="form-control-static d-flex flex-row">
+                                                                <b id="pacienteLocalidad">@Html.DisplayFor(x => x.Paciente.Localidad)</b>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editDatos('Localidad', this)"><i class="bi bi-pencil-square"></i></button>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Localidad', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
+                                                                <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -100,9 +111,11 @@
                                                     <div class="form-group row">
                                                         <label class="control-label text-md-right col-5">Obra social:</label>
                                                         <div class="col-7 pr-0">
-                                                            <p class="form-control-static">
-                                                                @Html.DisplayFor(x => x.ObraSocial.Nombre)
-                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editObraSocial()"><i class="bi bi-pencil-square"></i></button>
+                                                            <p class="form-control-static d-flex flex-row">
+                                                                <b id="pacienteObraSocial" data-id="@Model.Paciente.ObraSocialID">@Html.DisplayFor(x => x.Paciente.ObraSocial.Nombre)</b>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editObraSocial(this)"><i class="bi bi-pencil-square"></i></button>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('ObraSocial', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
+                                                                <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -113,9 +126,11 @@
                                                     <div class="form-group row">
                                                         <label class="control-label text-md-right col-5">Fecha nac: </label>
                                                         <div class="col-7 pr-0">
-                                                            <p class="form-control-static">
-                                                                @Model.FechaNacimiento.ToString("dd/MM/yyyy")
-                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editNacimiento()"><i class="bi bi-pencil-square"></i></button>
+                                                            <p class="form-control-static d-flex flex-row">
+                                                                <b id="pacienteFechaNacimiento">@Model.Paciente.FechaNacimiento.ToString("dd/MM/yyyy")</b>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editFechaNacimiento(this)"><i class="bi bi-pencil-square"></i></button>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('FechaNacimiento', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
+                                                                <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -143,7 +158,7 @@
                         <div id="divNewHC" class="col-12 col-sm-6 col-md-4 col-lg-3" style="display: none">
                             <form method="post" asp-area="" asp-controller="Pacientes" asp-action="SaveHC" id="form-saveHC">
                                 @Html.AntiForgeryToken()
-                                @Html.Hidden("PacienteID", Model.ID)
+                                @Html.Hidden("PacienteID", Model.Paciente.ID)
                                 <div class="card card-outline-inverse">
                                     <div class="card-header">
                                         <h4 class="m-b-0 text-white">
@@ -160,7 +175,7 @@
                                 </div>
                             </form>
                         </div>
-                        @foreach (var item in Model.HistoriasClinicas.OrderByDescending(x => x.Fecha).ThenByDescending(x => x.CreatedAt))
+                        @foreach (var item in Model.Paciente.HistoriasClinicas.OrderByDescending(x => x.Fecha).ThenByDescending(x => x.Paciente.CreatedAt))
                         {
                             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                                 <div class="card card-outline-inverse">
@@ -180,6 +195,13 @@
                 </div>
             </div>
         </div>
+    
+        <form id="form-datos" asp-area="" asp-controller="Pacientes" asp-action="UpdateDatos" method="post">
+            @Html.AntiForgeryToken()
+            @Html.Hidden("pacienteID", Model.Paciente.ID)
+            @Html.Hidden("datoToUpdate", "")
+            @Html.Hidden("datoValue", "")
+        </form>
     </div>
 </div>
 
@@ -195,64 +217,17 @@
 </style>
 
 <script>
-    function saveHC() {
-        let date = $('#DatePicker').val();
-        let description = $('#newDescription').val();
-        if (description == '') {
-            Swal.fire({
-                icon: 'warning',
-                title: "Error",
-                text: "Debes ingresar una descripción",
-                confirmButtonColor: '#2f3d4a',
-            });
-            return;
-        }
-        let form = $('#form-saveHC');
-        $.ajax({
-            url: $(form).attr('action'),
-            method: $(form).attr('method'),
-            data: $(form).serialize(),
-            success: function (response) {
-                toastr.success(
-                    response.message,
-                    response.title,
-                    {
-                        "onclick": null,
-                        "showDuration": 300,
-                        "hideDuration": 1000,
-                    }
-                );
-                let newCard = `
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                            <div class="card card-outline-inverse">
-                                <div class="card-header">
-                                    <h4 class="m-b-0 text-white">
-                                        ${date}
-                                        <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editHC(${response.data})"><i class="bi bi-pencil-square text-white"></i></button>
-                                    </h4>
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text">${description}</p>
-                                </div>
-                            </div>
-                        </div>
-                `;
-                $('#divNewHC').hide();
-                $('#divNewHC').after(newCard);
-            },
-            error: function (response) {
-                toastr.warning(
-                    response.responseJSON.message,
-                    response.responseJSON.title,
-                    {
-                        "onclick": null,
-                        "showDuration": 300,
-                        "hideDuration": 1000,
-                    }
-                );
-            }
-        });
+    function editObraSocial(btn) {
+        let obraSocial = $('#pacienteObraSocial').data('id');
+        $(btn).hide();
+        $(btn).next().show();
+        $('#pacienteObraSocial').hide();
+        $('#pacienteObraSocial').after(`@Html.DropDownListFor(x => x.Paciente.ObraSocialID, Model.ObraSociales, new { @class = "form-control", @style = "display: none", @id = "newObraSocial" })`);
+        $('#newObraSocial').val(obraSocial);
+        $('#newObraSocial').show();
+        $('#newObraSocial').focus();
     }
+
     function addHC() {
         $('#DatePicker').val('@DateTime.UtcNow.AddHours(-3).ToString("dd/MM/yyyy")');
         $('#newDescription').val('');
