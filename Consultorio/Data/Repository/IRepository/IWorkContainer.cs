@@ -13,6 +13,7 @@ namespace Consultorio.Data.Repository.IRepository
         ITurnoRepository Turno { get; }
         IDiaHorarioRepository DiaHorario { get; }
         IHorarioRepository Horario { get; }
+        IPacienteRepository Paciente { get; }
 
         void BeginTransaction();
         void Commit();

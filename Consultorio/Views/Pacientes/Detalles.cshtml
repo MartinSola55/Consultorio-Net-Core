@@ -1,0 +1,266 @@
+﻿@model Consultorio.Models.Paciente
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Pacientes";
+}
+
+<link href="~/lib/daterangepicker/daterangepicker.css" rel="stylesheet">
+<link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
+
+<script src="~/lib/datatables/datatables.min.js"></script>
+<script src="~/lib/moment/moment-with-locales.js"></script>
+<script src="~/lib/daterangepicker/daterangepicker.js"></script><script src="~/js/custom/pacientes/index.js"></script>
+
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Pacientes</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Pacientes" asp-action="Index">Pacientes</a></li>
+                <li class="breadcrumb-item active">Detalles</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="col-12">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-body">
+                                            <h3 class="box-title">Información del paciente</h3>
+                                            <hr class="m-t-0 m-b-20">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="control-label text-md-right col-5" style="font-size: 20px">Nombre:</label>
+                                                        <div class="col-7 pr-0">
+                                                            <p class="form-control-static" style="font-size: 20px">
+                                                                <b>@Html.DisplayFor(x => x.Nombre)</b>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editNombre()"><i class="bi bi-pencil-square"></i></button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="control-label text-md-right col-5" style="font-size: 20px">Apellido:</label>
+                                                        <div class="col-7 pr-0">
+                                                            <p class="form-control-static" style="font-size: 20px">
+                                                                <b>@Html.DisplayFor(x => x.Apellido)</b>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editApellido()"><i class="bi bi-pencil-square"></i></button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="control-label text-md-right col-5">Teléfono:</label>
+                                                        <div class="col-7 pr-0">
+                                                            <p class="form-control-static">
+                                                                @Html.DisplayFor(x => x.Telefono)
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editTelefono()"><i class="bi bi-pencil-square"></i></button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="control-label text-md-right col-5">Dirección:</label>
+                                                        <div class="col-7 pr-0">
+                                                            <p class="form-control-static">
+                                                                @Html.DisplayFor(x => x.Direccion)
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editDireccion()"><i class="bi bi-pencil-square"></i></button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="control-label text-md-right col-5">Localidad:</label>
+                                                        <div class="col-7 pr-0">
+                                                            <p class="form-control-static">
+                                                                @Html.DisplayFor(x => x.Localidad)
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editTelefono()"><i class="bi bi-pencil-square"></i></button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="control-label text-md-right col-5">Obra social:</label>
+                                                        <div class="col-7 pr-0">
+                                                            <p class="form-control-static">
+                                                                @Html.DisplayFor(x => x.ObraSocial.Nombre)
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editObraSocial()"><i class="bi bi-pencil-square"></i></button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="control-label text-md-right col-5">Fecha nac: </label>
+                                                        <div class="col-7 pr-0">
+                                                            <p class="form-control-static">
+                                                                @Model.FechaNacimiento.ToString("dd/MM/yyyy")
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editNacimiento()"><i class="bi bi-pencil-square"></i></button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-column flex-sm-row">
+                        <h2 class="card-title text-center mb-sm-0">Historias clínicas</h2>
+                        <button class="btn btn-sm dark-button btn-dark text-white waves-effect waves-light ml-4 align-self-center" type="button" onclick="addHC()">Agregar <i class="bi bi-plus-lg"></i></button>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div id="divNewHC" class="col-12 col-sm-6 col-md-4 col-lg-3" style="display: none">
+                            <form method="post" asp-area="" asp-controller="Pacientes" asp-action="SaveHC" id="form-saveHC">
+                                @Html.AntiForgeryToken()
+                                @Html.Hidden("PacienteID", Model.ID)
+                                <div class="card card-outline-inverse">
+                                    <div class="card-header">
+                                        <h4 class="m-b-0 text-white">
+                                            <input type="text" id="DatePicker" name="Fecha" class="form-control dark-input bg-dark text-white" value="@DateTime.UtcNow.AddHours(-3).ToString("dd/MM/yyyy")" />
+                                        </h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <textarea name="Descripcion" id="newDescription" class="form-control card-text" rows="5"></textarea>
+                                    </div>
+                                    <div class="d-flex flex-row justify-content-between px-3 pb-3">
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="resetNewHC()">Cancelar</button>
+                                        <button type="button" class="btn btn-sm btn-inverse" onclick="saveHC()">Guardar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        @foreach (var item in Model.HistoriasClinicas.OrderByDescending(x => x.Fecha).ThenByDescending(x => x.CreatedAt))
+                        {
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                <div class="card card-outline-inverse">
+                                    <div class="card-header">
+                                        <h4 class="m-b-0 text-white">
+                                            @item.Fecha.ToString("dd/MM/yyyy")
+                                            <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editHC(@item.ID)"><i class="bi bi-pencil-square text-white"></i></button>
+                                        </h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">@Html.DisplayFor(x => item.Descripcion)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dark-input {
+        background: #2f3d4a !important;
+        border-color: #2f3d4a !important;
+    }
+    .dark-button {
+        background: #2f3d4a !important;
+        border-color: #2f3d4a !important;
+    }
+</style>
+
+<script>
+    function saveHC() {
+        let date = $('#DatePicker').val();
+        let description = $('#newDescription').val();
+        if (description == '') {
+            Swal.fire({
+                icon: 'warning',
+                title: "Error",
+                text: "Debes ingresar una descripción",
+                confirmButtonColor: '#2f3d4a',
+            });
+            return;
+        }
+        let form = $('#form-saveHC');
+        $.ajax({
+            url: $(form).attr('action'),
+            method: $(form).attr('method'),
+            data: $(form).serialize(),
+            success: function (response) {
+                toastr.success(
+                    response.message,
+                    response.title,
+                    {
+                        "onclick": null,
+                        "showDuration": 300,
+                        "hideDuration": 1000,
+                    }
+                );
+                let newCard = `
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                            <div class="card card-outline-inverse">
+                                <div class="card-header">
+                                    <h4 class="m-b-0 text-white">
+                                        ${date}
+                                        <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editHC(${response.data})"><i class="bi bi-pencil-square text-white"></i></button>
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">${description}</p>
+                                </div>
+                            </div>
+                        </div>
+                `;
+                $('#divNewHC').hide();
+                $('#divNewHC').after(newCard);
+            },
+            error: function (response) {
+                toastr.warning(
+                    response.responseJSON.message,
+                    response.responseJSON.title,
+                    {
+                        "onclick": null,
+                        "showDuration": 300,
+                        "hideDuration": 1000,
+                    }
+                );
+            }
+        });
+    }
+    function addHC() {
+        $('#DatePicker').val('@DateTime.UtcNow.AddHours(-3).ToString("dd/MM/yyyy")');
+        $('#newDescription').val('');
+        $('#divNewHC').show();
+    }
+    function resetNewHC() {
+        $('#divNewHC').hide();
+        $('#DatePicker').val('@DateTime.UtcNow.AddHours(-3).ToString("dd/MM/yyyy")');
+        $('#newDescription').val('');
+    }
+</script>

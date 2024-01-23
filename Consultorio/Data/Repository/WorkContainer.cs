@@ -18,6 +18,7 @@ namespace Consultorio.Data.Repository
             Turno = new TurnoRepository(_db);
             DiaHorario = new DiaHorarioRepository(_db);
             Horario = new HorarioRepository(_db);
+            Paciente = new PacienteRepository(_db);
         }
 
         public IApplicationUserRepository ApplicationUser { get; private set; }
@@ -25,6 +26,7 @@ namespace Consultorio.Data.Repository
         public ITurnoRepository Turno { get; private set; }
         public IDiaHorarioRepository DiaHorario { get; private set; }
         public IHorarioRepository Horario { get; private set; }
+        public IPacienteRepository Paciente { get; private set; }
 
         public void BeginTransaction()
         {
