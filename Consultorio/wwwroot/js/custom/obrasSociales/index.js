@@ -3,10 +3,10 @@ function fillTable(item) {
     let btn = "";
     if (item.habilitada) {
         active = `<i class="bi bi-check2" style="font-size: 1.5rem"></i>`;
-        btn = `<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.habilitada}")'><i class='bi bi-toggle-on'></i></button>`;
+        btn = `<button type='button' class='btn btn-danger btn-rounded btn-sm mx-1' onclick='changeState(${item.id}, "${item.habilitada}")'><i class='bi bi-toggle-on'></i></button>`;
     } else {
         active = `<i class="bi bi-x-lg" style="font-size: 1.3rem"></i>`;
-        btn = `<button type='button' class='btn btn-info btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.habilitada}")'><i class='bi bi-toggle-off'></i></button>`;
+        btn = `<button type='button' class='btn btn-info btn-rounded btn-sm mx-1' onclick='changeState(${item.id}, "${item.habilitada}")'><i class='bi bi-toggle-off'></i></button>`;
     }
     let content = `
     <tr data-id='${item.id}'>
@@ -15,6 +15,7 @@ function fillTable(item) {
         <td class='d-flex flex-row justify-content-center'>
             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
             ${btn}
+            <button type='button' class='btn btn-outline-danger btn-rounded btn-sm ml-2' onclick='softDelete(${item.id})'><i class='bi bi-trash'></i></button>
         </td>
     </tr>`;
     $('#ObrasSocialesTable').DataTable().row.add($(content)).draw();
@@ -22,6 +23,26 @@ function fillTable(item) {
 
 function removeFromTable(id) {
     $('#ObrasSocialesTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
+}
+
+function softDelete(id) {
+    Swal.fire({
+        title: '¿Seguro deseas eliminar esta obra social?',
+        html: "No podrás revertir esta acción<br/>La obra social no se eliminará si existen pacientes asociados a ella.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Confirmar',
+        buttonsStyling: false,
+        customClass: {
+            confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
+            cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $("#form-delete input[name='id']").val(id);
+            sendForm("delete");
+        }
+    });
 }
 
 function changeState(id, isActive) {
@@ -41,8 +62,7 @@ function changeState(id, isActive) {
             confirmButton: 'btn btn-warning waves-effect waves-light px-3 py-2',
             cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
         }
-    })
-    .then((result) => {
+    }).then((result) => {
         if (result.isConfirmed) {
             $("#form-state input[name='id']").val(id);
             sendForm("state");
@@ -62,25 +82,18 @@ function sendForm(action) {
             data: $(form).serialize(),
             success: function(response) {
                 $("#btnCloseModalCreate").click();
-                Swal.fire({
-                    icon: 'success',
-                    title: response.message,
-                    confirmButtonColor: '#1e88e5',
-                });
+                toastrSuccess(response.message);
                 if (action === 'create') {
                     fillTable(response.data);
+                } else if (action === 'delete') {
+                    removeFromTable(response.data);
                 } else {
                     removeFromTable(response.data.id);
                     fillTable(response.data);
                 }
             },
-            error: function(errorThrown) {
-                Swal.fire({
-                    icon: 'error',
-                    title: errorThrown.responseJSON.title,
-                    text: errorThrown.responseJSON.message,
-                    confirmButtonColor: '#1e88e5',
-                });
+            error: function (errorThrown) {
+                toastrWarning(errorThrown.responseJSON.message, errorThrown.responseJSON.title);
             }
         });   
     }

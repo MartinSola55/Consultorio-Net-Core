@@ -71,6 +71,31 @@
         toastr.options = {
             "positionClass": "toast-bottom-right"
         };
+
+        moment.locale('es');
+        function toastrSuccess(message, title = "") {
+            return toastr.success(
+                message,
+                title,
+                {
+                    "onclick": null,
+                    "showDuration": 300,
+                    "hideDuration": 1000,
+                }
+            );
+        };
+
+        function toastrWarning(message, title = "") {
+            return toastr.warning(
+                message,
+                title,
+                {
+                    "onclick": null,
+                    "showDuration": 300,
+                    "hideDuration": 1000,
+                }
+            );
+        };
     </script>
 </body>
 </html>

@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Consultorio.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,11 +59,10 @@ namespace Consultorio.Migrations
                 {
                     ID = table.Column<short>(type: "smallint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Hora = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Hora = table.Column<TimeOnly>(type: "time", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    HoraString = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -74,7 +75,7 @@ namespace Consultorio.Migrations
                 {
                     ID = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Habilitada = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -221,15 +222,15 @@ namespace Consultorio.Migrations
                 {
                     ID = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Apellido = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ObraSocialID = table.Column<long>(type: "bigint", nullable: false),
-                    FechaNacimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Direccion = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Localidad = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
+                    Apellido = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ObraSocialID = table.Column<long>(type: "bigint", nullable: true),
+                    FechaNacimiento = table.Column<DateTime>(type: "date", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Localidad = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
@@ -299,13 +300,11 @@ namespace Consultorio.Migrations
                 {
                     ID = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PerosnaID = table.Column<long>(type: "bigint", nullable: false),
+                    PersonaID = table.Column<long>(type: "bigint", nullable: false),
                     DiaHorarioID = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    PersonaID = table.Column<long>(type: "bigint", nullable: false),
-                    PacienteID = table.Column<long>(type: "bigint", nullable: true)
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -317,16 +316,31 @@ namespace Consultorio.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Turno_Paciente_PacienteID",
-                        column: x => x.PacienteID,
-                        principalTable: "Paciente",
-                        principalColumn: "ID");
-                    table.ForeignKey(
                         name: "FK_Turno_Persona_PersonaID",
                         column: x => x.PersonaID,
                         principalTable: "Persona",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Horario",
+                columns: new[] { "ID", "CreatedAt", "DeletedAt", "Hora", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { (short)1, new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(89), null, new TimeOnly(9, 0, 0), new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(93) },
+                    { (short)2, new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(192), null, new TimeOnly(9, 20, 0), new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(192) },
+                    { (short)3, new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(196), null, new TimeOnly(9, 40, 0), new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(196) },
+                    { (short)4, new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(227), null, new TimeOnly(10, 0, 0), new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(227) },
+                    { (short)5, new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(230), null, new TimeOnly(10, 20, 0), new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(230) },
+                    { (short)6, new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(232), null, new TimeOnly(10, 40, 0), new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(232) },
+                    { (short)7, new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(234), null, new TimeOnly(11, 0, 0), new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(234) },
+                    { (short)8, new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(236), null, new TimeOnly(11, 20, 0), new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(236) },
+                    { (short)9, new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(238), null, new TimeOnly(11, 40, 0), new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(238) },
+                    { (short)10, new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(241), null, new TimeOnly(12, 0, 0), new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(241) },
+                    { (short)11, new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(243), null, new TimeOnly(12, 20, 0), new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(243) },
+                    { (short)12, new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(245), null, new TimeOnly(12, 40, 0), new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(245) },
+                    { (short)13, new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(247), null, new TimeOnly(13, 0, 0), new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(247) }
                 });
 
             migrationBuilder.CreateIndex(
@@ -394,11 +408,6 @@ namespace Consultorio.Migrations
                 column: "DiaHorarioID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Turno_PacienteID",
-                table: "Turno",
-                column: "PacienteID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Turno_PersonaID",
                 table: "Turno",
                 column: "PersonaID");
@@ -435,10 +444,10 @@ namespace Consultorio.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "DiaHorario");
+                name: "Paciente");
 
             migrationBuilder.DropTable(
-                name: "Paciente");
+                name: "DiaHorario");
 
             migrationBuilder.DropTable(
                 name: "Persona");

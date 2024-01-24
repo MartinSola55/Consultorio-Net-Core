@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Consultorio.Models;
+using Consultorio.Models.ViewModels.Pacientes;
 
 namespace Consultorio.Data.Repository.IRepository
 {
@@ -15,5 +16,7 @@ namespace Consultorio.Data.Repository.IRepository
         void SoftDelete(long id);
         bool IsDuplicated(Paciente paciente);
         long AddHC(HistoriaClinica historiaClinica);
+        List<Paciente> GetByNacimiento(DateTime nacimiento);
+        Task<List<GetByNameResponse>> GetByNombreApellido(string words);
     }
 }

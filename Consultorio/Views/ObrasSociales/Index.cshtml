@@ -57,7 +57,6 @@
             </form>
         </div>
     </div>
-    <!-- End Modal -->
 
     <div class="row">
         <div class="col-12">
@@ -97,7 +96,8 @@
                                         </td>
                                         <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                                            <button type='button' class='btn @(item.Habilitada ? "btn-danger" : "btn-info") btn-rounded btn-sm ml-2' onclick='changeState(@item.ID, "@item.Habilitada")'><i class='bi @(item.Habilitada ? "bi-toggle-on" : "bi-toggle-off")'></i></button>
+                                            <button type='button' class='btn @(item.Habilitada ? "btn-danger" : "btn-info") btn-rounded btn-sm mx-1' onclick='changeState(@item.ID, "@item.Habilitada")'><i class='bi @(item.Habilitada ? "bi-toggle-on" : "bi-toggle-off")'></i></button>
+                                            <button type='button' class='btn btn-outline-danger btn-rounded btn-sm ml-2' onclick='softDelete(@item.ID)'><i class='bi bi-trash'></i></button>
                                         </td>
                                     </tr>
                                 }
@@ -105,6 +105,10 @@
                         </table>
                     </div>
                     <form id="form-state" method="POST" asp-area="" asp-controller="ObrasSociales" asp-action="ChangeState">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="">
+                    </form>
+                    <form id="form-delete" method="POST" asp-area="" asp-controller="ObrasSociales" asp-action="SoftDelete">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="">
                     </form>

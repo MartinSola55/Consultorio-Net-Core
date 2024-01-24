@@ -157,7 +157,7 @@ namespace Consultorio.Controllers
                 {
                     success = true,
                     data = obraSocial,
-                    message = "La obra social se deshabilitó",
+                    message = "La obra social se " + (obraSocial.Habilitada ? "habilitó" : "deshabilitó"),
                 });
             }
             catch (Exception e)

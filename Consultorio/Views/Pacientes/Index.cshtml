@@ -5,10 +5,12 @@
     ViewData["Title"] = "Pacientes";
 }
 
+<link href="~/lib/daterangepicker/daterangepicker.css" rel="stylesheet">
 <link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
 
 <script src="~/lib/datatables/datatables.min.js"></script>
 <script src="~/lib/moment/moment-with-locales.js"></script>
+<script src="~/lib/daterangepicker/daterangepicker.js"></script>
 <script src="~/js/custom/pacientes/index.js"></script>
 
 <div class="container-fluid">
@@ -26,12 +28,26 @@
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-body">
-                    <div class="d-flex flex-row justify-content-between">
-                        <h2 class="card-title">Listado de pacientes</h2>
-                        <button type="button" onclick="add()" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar paciente</button>
-                    </div>
+                    <h2 class="card-title">Listado de pacientes</h2>
+                    <hr />
+                    <form method="get" asp-area="" asp-controller="Pacientes" asp-action="GetByName" class="form-material">
+                        <div class="row justify-content-between">
+                            <div class="form-group col-12 col-sm-6 col-md-4">
+                                <input id="NombreApellido" type="text" class="form-control form-control-line">
+                                <span class="help-block text-muted">
+                                    <small>Nombre o apellido del paciente</small>
+                                </span>
+                            </div>
+                            <div class="form-group col-12 col-sm-6 col-md-4">
+                                <input id="DatePicker" type="text" class="form-control form-control-line" placeholder="dd/mm/aaaa">
+                                <span class="help-block text-muted">
+                                    <small>Fecha de nacimiento del paciente</small>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
                     <div class="table-responsive m-t-10">
-                        <table id="ObrasSocialesTable" class="table table-bordered table-striped">
+                        <table id="PacientesTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
@@ -45,32 +61,145 @@
                                     <th>Acción</th>
                                 </tr>
                             </thead>
-                            <tbody id="table_body">
-                                @foreach (var item in Model.Pacientes)
-                                {
-                                    <tr data-id="@item.ID">
-                                        <td><a asp-area="" asp-controller="Pacientes" asp-action="Detalles" asp-route-id="@item.ID" target="_blank">@Html.DisplayFor(x => item.Nombre)</a></td>
-                                        <td>@Html.DisplayFor(x => item.Apellido)</td>
-                                        <td>@Html.DisplayFor(x => item.Direccion)</td>
-                                        <td>@Html.DisplayFor(x => item.Localidad)</td>
-                                        <td>@Html.DisplayFor(x => item.Telefono)</td>
-                                        <td>@Html.DisplayFor(x => item.ObraSocial.Nombre)</td>
-                                        <td>@item.FechaNacimiento.ToString("dd/MM/yyyy")</td>
-                                        <td>@item.UpdatedAt.ToString("dd/MM/yyyy")</td>
-                                        <td class='d-flex flex-row justify-content-center'>
-                                            <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                                        </td>
-                                    </tr>
-                                }
+                            <tbody>
                             </tbody>
                         </table>
                     </div>
-                    <form id="form-state" method="POST" asp-area="" asp-controller="Pacientes" asp-action="SoftDelete">
+                    <form id="form-state" method="post" asp-area="" asp-controller="Pacientes" asp-action="SoftDelete">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="">
+                    </form>
+                    <form id="form-searchByDate" method="get" asp-area="" asp-controller="Pacientes" asp-action="SearchByDate">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="date" value="">
+                    </form>
+                    <form id="form-searchNombreApellido" method="get" asp-area="" asp-controller="Pacientes" asp-action="SearchByName">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="words" value="">
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function createDate(dateString) {
+        let date = new Date(dateString);
+        let day = ("0" + date.getDate()).slice(-2);
+        let month = ("0" + (date.getMonth() + 1)).slice(-2);
+        let year = date.getFullYear();
+        return day + "/" + month + "/" + year;
+    }
+
+    function loadingRow() {
+        $('#PacientesTable tbody').empty();
+        let loadingRow = `<tr>
+                    <td>
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Cargando...</span>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>`;
+        $('#PacientesTable tbody').append($(loadingRow));
+    }
+
+    function errorRow() {
+        $('#PacientesTable tbody').empty();
+        let row = `<tr>
+                            <td><h6 class="text-danger">No se pudo cargar la información</h6></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>`;
+        $('#PacientesTable tbody').append($(row));
+    }
+
+    function fillTable(pacientes) {
+        $('#PacientesTable tbody').empty();
+        pacientes.forEach(item => {
+            let row = `
+                <tr data-id="${item.id}">
+                    <td><a href="/Pacientes/Detalles/${item.id}" target="_blank">${item.nombre}</a></td>
+                    <td>${item.apellido}</td>
+                    <td>${item.direccion}</td>
+                    <td>${item.localidad}</td>
+                    <td>${item.telefono}</td>
+                    <td>${item.obraSocial}</td>
+                    <td>${item.fechaNacimiento}</td>
+                    <td>${item.updatedAt}</td>
+                    <td class='d-flex flex-row justify-content-center'>
+                        <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})'><i class="bi bi-pencil"></i></button>
+                    </td>
+                </tr>`;
+            $('#PacientesTable tbody').append($(row));
+        });
+    }
+    moment.locale('es');
+    $('#DatePicker').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true
+    });
+
+    $(document).ready(function () {
+        let timeoutId;
+        $('#NombreApellido').on('input', function () {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(searchByName, 1000);
+        });
+
+        $('#DatePicker').on('change', function () {
+            loadingRow();
+            searchByDate();
+        });
+    });
+
+    function searchByName() {
+        const name = $('#NombreApellido').val();
+        if (name.length < 4) return toastrWarning("Debes ingresar al menos 4 caracteres para buscar por nombre o apellido");
+        loadingRow();
+        const form = $('#form-searchNombreApellido');
+        $(form).find('input[name="words"]').val(name);
+        $.ajax({
+            url: $(form).attr('action'),
+            method: $(form).attr('method'),
+            data: $(form).serialize(),
+            success: function (response) {
+                fillTable(response.data)
+            },
+            error: function (response) {
+                errorRow();
+            }
+        });
+    }
+
+    function searchByDate() {
+        const date = $('#DatePicker').val();
+        const form = $('#form-searchByDate');
+        $(form).find('input[name="date"]').val(date);
+        $.ajax({
+            url: $(form).attr('action'),
+            method: $(form).attr('method'),
+            data: $(form).serialize(),
+            success: function (response) {
+                fillTable(response.data)
+            },
+            error: function (response) {
+                errorRow();
+            }
+        });
+    }
+</script>

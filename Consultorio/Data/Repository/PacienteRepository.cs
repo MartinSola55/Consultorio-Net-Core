@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Consultorio.Data.Repository.IRepository;
 using Consultorio.Models;
+using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Consultorio.Models.ViewModels.Pacientes;
 
 namespace Consultorio.Data.Repository
 {
@@ -92,6 +95,35 @@ namespace Consultorio.Data.Repository
             hc.Descripcion = historiaClinica.Descripcion;
             hc.Fecha = historiaClinica.Fecha;
             _db.SaveChanges();
+        }
+
+        public List<Paciente> GetByNacimiento(DateTime nacimiento)
+        {
+            return [.. _db.Paciente.Where(x => x.FechaNacimiento.Date == nacimiento.Date).Include(x => x.ObraSocial) ];
+        }
+
+        public async Task<List<GetByNameResponse>> GetByNombreApellido(string words)
+        {
+            List<string> nombres = [.. words.Split(' ')];
+            var query = _db.Paciente
+                    .Where(x => nombres.Any(n => x.Nombre.StartsWith(n) || x.Nombre.Contains(n) || x.Nombre.EndsWith(n) ||
+                    x.Apellido.StartsWith(n) || x.Apellido.Contains(n) || x.Apellido.EndsWith(n)))
+                    .Include(x => x.ObraSocial)
+                    .AsQueryable()
+                    .AsNoTracking();
+            var list = await query.Select(x => new GetByNameResponse
+                {
+                    Nombre = x.Nombre,
+                    Apellido = x.Apellido,
+                    Telefono = x.Telefono ?? "-",
+                    Direccion = x.Direccion ?? "-",
+                    Localidad = x.Localidad ?? "-",
+                    FechaNacimiento = x.FechaNacimiento.ToString("dd/MM/yyyy"),
+                    ObraSocial = x.ObraSocial.Nombre,
+                    UpdatedAt = x.UpdatedAt.ToString("dd/MM/yyyy")
+                })
+                .ToListAsync();
+            return list;
         }
     }
 }

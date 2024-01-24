@@ -28,16 +28,10 @@ namespace Consultorio.Data.Repository
 
         public void SoftDelete(long id)
         {
-            try
-            {
-                var dbObject = _db.ObraSocial.First(x => x.ID == id) ?? throw new Exception("No se ha encontrado la obra social");
-                dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
-                _db.SaveChanges();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            var dbObject = _db.ObraSocial.First(x => x.ID == id) ?? throw new Exception("No se ha encontrado la obra social");
+            if (_db.Paciente.Any(x => x.ObraSocialID == id)) throw new Exception("No se puede eliminar la obra social porque hay pacientes que la tienen asignada");
+            dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
+            _db.SaveChanges();
         }
 
         public void Update(ObraSocial obraSocial)

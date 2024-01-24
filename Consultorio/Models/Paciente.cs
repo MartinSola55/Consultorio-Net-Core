@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace Consultorio.Models
@@ -23,7 +24,9 @@ namespace Consultorio.Models
 
         [Required(ErrorMessage = "Debes añadir un teléfono")]
         [RegularExpression("^[0-9]+$", ErrorMessage = "Debes añadir un teléfono válido")]
-        public string Telefono { set; get; } = null!;
+        [AllowNull]
+        [MaybeNull]
+        public string? Telefono { set; get; }
 
         [Required(ErrorMessage = "Debes seleccionar una obra social")]
         [Display(Name = "Obra Social")]
@@ -32,17 +35,20 @@ namespace Consultorio.Models
         [Required(ErrorMessage = "Debes seleccionar una fecha de nacimiento")]
         [DataType(DataType.Date)]
         [Display(Name = "Fecha de nacimiento")]
+        [MaybeNull]
         public DateTime FechaNacimiento { get; set; }
 
         [Required(ErrorMessage = "Debes añadir una dirección")]
         [StringLength(50, ErrorMessage = "Debes añadir una dirección de menos de 50 caracteres")]
         [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s0-9.]+$", ErrorMessage = "Ingrese una dirección válida")]
-        public string Direccion { get; set; } = null!;
+        [MaybeNull]
+        public string? Direccion { get; set; }
 
         [Required(ErrorMessage = "Debes añadir una localidad")]
         [StringLength(30, ErrorMessage = "Debes añadir una localidad de menos de 30 caracteres")]
         [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s]+$", ErrorMessage = "Ingrese una localidad válida")]
-        public string Localidad { get; set; } = null!;
+        [MaybeNull]
+        public string? Localidad { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow.AddHours(-3);
 

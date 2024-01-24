@@ -118,93 +118,93 @@ namespace Consultorio.Migrations
                         new
                         {
                             ID = (short)1,
-                            CreatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6038),
+                            CreatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(89),
                             Hora = new TimeOnly(9, 0, 0),
-                            UpdatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6041)
+                            UpdatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(93)
                         },
                         new
                         {
                             ID = (short)2,
-                            CreatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6139),
+                            CreatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(192),
                             Hora = new TimeOnly(9, 20, 0),
-                            UpdatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6139)
+                            UpdatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(192)
                         },
                         new
                         {
                             ID = (short)3,
-                            CreatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6142),
+                            CreatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(196),
                             Hora = new TimeOnly(9, 40, 0),
-                            UpdatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6143)
+                            UpdatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(196)
                         },
                         new
                         {
                             ID = (short)4,
-                            CreatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6145),
+                            CreatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(227),
                             Hora = new TimeOnly(10, 0, 0),
-                            UpdatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6145)
+                            UpdatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(227)
                         },
                         new
                         {
                             ID = (short)5,
-                            CreatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6147),
+                            CreatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(230),
                             Hora = new TimeOnly(10, 20, 0),
-                            UpdatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6147)
+                            UpdatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(230)
                         },
                         new
                         {
                             ID = (short)6,
-                            CreatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6149),
+                            CreatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(232),
                             Hora = new TimeOnly(10, 40, 0),
-                            UpdatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6149)
+                            UpdatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(232)
                         },
                         new
                         {
                             ID = (short)7,
-                            CreatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6151),
+                            CreatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(234),
                             Hora = new TimeOnly(11, 0, 0),
-                            UpdatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6151)
+                            UpdatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(234)
                         },
                         new
                         {
                             ID = (short)8,
-                            CreatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6153),
+                            CreatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(236),
                             Hora = new TimeOnly(11, 20, 0),
-                            UpdatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6154)
+                            UpdatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(236)
                         },
                         new
                         {
                             ID = (short)9,
-                            CreatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6156),
+                            CreatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(238),
                             Hora = new TimeOnly(11, 40, 0),
-                            UpdatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6156)
+                            UpdatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(238)
                         },
                         new
                         {
                             ID = (short)10,
-                            CreatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6158),
+                            CreatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(241),
                             Hora = new TimeOnly(12, 0, 0),
-                            UpdatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6158)
+                            UpdatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(241)
                         },
                         new
                         {
                             ID = (short)11,
-                            CreatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6160),
+                            CreatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(243),
                             Hora = new TimeOnly(12, 20, 0),
-                            UpdatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6160)
+                            UpdatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(243)
                         },
                         new
                         {
                             ID = (short)12,
-                            CreatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6162),
+                            CreatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(245),
                             Hora = new TimeOnly(12, 40, 0),
-                            UpdatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6162)
+                            UpdatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(245)
                         },
                         new
                         {
                             ID = (short)13,
-                            CreatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6164),
+                            CreatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(247),
                             Hora = new TimeOnly(13, 0, 0),
-                            UpdatedAt = new DateTime(2024, 1, 21, 16, 32, 41, 394, DateTimeKind.Utc).AddTicks(6164)
+                            UpdatedAt = new DateTime(2024, 1, 23, 23, 38, 42, 699, DateTimeKind.Utc).AddTicks(247)
                         });
                 });
 
@@ -261,7 +261,8 @@ namespace Consultorio.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime>("FechaNacimiento")
+                    b.Property<DateTime?>("FechaNacimiento")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Localidad")
@@ -274,7 +275,8 @@ namespace Consultorio.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<long>("ObraSocialID")
+                    b.Property<long?>("ObraSocialID")
+                        .IsRequired()
                         .HasColumnType("bigint");
 
                     b.Property<string>("Telefono")

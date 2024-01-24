@@ -1,28 +1,3 @@
-moment.locale('es');
-function toastrSuccess(message, title) {
-    return toastr.success(
-        message,
-        title,
-        {
-            "onclick": null,
-            "showDuration": 300,
-            "hideDuration": 1000,
-        }
-    );
-};
-
-function toastrWarning(message, title) {
-    return toastr.warning(
-        message,
-        title,
-        {
-            "onclick": null,
-            "showDuration": 300,
-            "hideDuration": 1000,
-        }
-    );
-};
-
 function editFechaNacimiento(btn) {
     let nacimiento = $('#pacienteFechaNacimiento').text();
     $(btn).hide();

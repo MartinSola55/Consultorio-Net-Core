@@ -4,11 +4,10 @@
 @{
     ViewData["Title"] = "Pacientes";
     DateTime today = DateTime.Now.AddHours(-3);
-    int edad = today.Year - Model.Paciente.FechaNacimiento.Year;
+    int edad = 0;
+    edad = today.Year - Model.Paciente.FechaNacimiento.Year;
     if (Model.Paciente.FechaNacimiento.Date > today.AddYears(-edad))
-    {
         edad--;
-    }
 }
 
 <link href="~/lib/daterangepicker/daterangepicker.css" rel="stylesheet">
@@ -16,7 +15,7 @@
 
 <script src="~/lib/datatables/datatables.min.js"></script>
 <script src="~/lib/moment/moment-with-locales.js"></script>
-<script src="~/lib/daterangepicker/daterangepicker.js"></script><script src="~/js/custom/pacientes/index.js"></script>
+<script src="~/lib/daterangepicker/daterangepicker.js"></script>
 <script src="~/js/custom/pacientes/detalles.js"></script>
 
 <div class="container-fluid">
@@ -118,7 +117,7 @@
                                                         <label class="control-label text-md-right col-5">Obra social:</label>
                                                         <div class="col-7 pr-0">
                                                             <p class="form-control-static d-flex flex-row">
-                                                                <b id="pacienteObraSocial" data-id="@Model.Paciente.ObraSocialID">@Html.DisplayFor(x => x.Paciente.ObraSocial.Nombre)</b>
+                                                                <b id="pacienteObraSocial" data-id="@Model.Paciente.ObraSocialID">@(Model.Paciente.ObraSocial is not null ? Model.Paciente.ObraSocial.Nombre : "")</b>
                                                                 <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editObraSocial(this)"><i class="bi bi-pencil-square"></i></button>
                                                                 <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('ObraSocial', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
                                                                 <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
@@ -130,7 +129,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label class="control-label text-md-right col-5">Fecha nac (@edad años): </label>
+                                                        <label class="control-label text-md-right col-5">Fecha nac. (@edad años): </label>
                                                         <div class="col-7 pr-0">
                                                             <p class="form-control-static d-flex flex-row">
                                                                 <b id="pacienteFechaNacimiento">@Model.Paciente.FechaNacimiento.ToString("dd/MM/yyyy")</b>
