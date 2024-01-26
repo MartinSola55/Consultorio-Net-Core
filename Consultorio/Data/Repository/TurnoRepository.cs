@@ -23,11 +23,27 @@ namespace Consultorio.Data.Repository
             _db.SaveChanges();
         }
 
-        public void Update(Turno turno)
+        public Turno Update(Turno turno)
         {
-            var dbObject = _db.Turno.First(x => x.ID == turno.ID) ?? throw new Exception("No se ha encontrado el turno");
+            var dbObject = _db.Turno.Include(x => x.Persona).Include(x => x.DiaHorario).First(x => x.ID == turno.ID) ?? throw new Exception("No se ha encontrado el turno");
+            var oldDiaHorario = _db.DiaHorario.First(x => x.ID == dbObject.DiaHorarioID);
+            var newDiaHorario = _db.DiaHorario.First(x => x.ID == turno.DiaHorarioID);
+            oldDiaHorario.Disponible = true;
+            newDiaHorario.Disponible = false;
+            
             dbObject.UpdatedAt = DateTime.UtcNow.AddHours(-3);
+            dbObject.Persona.Nombre = turno.Persona.Nombre;
+            dbObject.Persona.Apellido = turno.Persona.Apellido;
+            dbObject.Persona.Telefono = turno.Persona.Telefono;
+            dbObject.Persona.ObraSocialID = turno.Persona.ObraSocialID;
+            dbObject.DiaHorarioID = turno.DiaHorarioID;
             _db.SaveChanges();
+            return _db.Turno
+                .Include(x => x.Persona)
+                    .ThenInclude(x => x.ObraSocial)
+                .Include(x => x.DiaHorario)
+                    .ThenInclude(x => x.Horario)
+                .First(x => x.ID == turno.ID);
         }
 
         public List<Turno> GetByDate(DateTime date)

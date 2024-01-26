@@ -58,6 +58,7 @@ namespace Consultorio.Controllers
                         Turno turno = turnos.First(x => x.DiaHorario.HorarioID == diaHorario.HorarioID);
                         data.Add(new
                         {
+                            id = turno.ID,
                             nombre = turno.Persona.Nombre,
                             apellido = turno.Persona.Apellido,
                             obraSocial = turno.Persona.ObraSocial.Nombre,
@@ -65,6 +66,7 @@ namespace Consultorio.Controllers
                             hora = turno.DiaHorario.Horario.Hora.ToString("HH:mm"),
                             disponible = false,
                             diaHorarioID = diaHorario.ID,
+                            obraSocialID = turno.Persona.ObraSocialID,
                         });
                     } else
                     {
@@ -109,9 +111,11 @@ namespace Consultorio.Controllers
 
                     object data = new
                     {
+                        id = newTurno.ID,
                         nombre = newTurno.Persona.Nombre,
                         apellido = newTurno.Persona.Apellido,
                         obraSocial = newTurno.Persona.ObraSocial.Nombre,
+                        obraSocialID = newTurno.Persona.ObraSocialID,
                         telefono = newTurno.Persona.Telefono,
                         hora = newTurno.DiaHorario.Horario.Hora.ToString("HH:mm"),
                         disponible = false,
@@ -130,6 +134,51 @@ namespace Consultorio.Controllers
             catch (Exception)
             {
                 return CustomBadRequest(title: "No se pudo agregar el turno", message: "Intente nuevamente o comuníquese para soporte");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("Update")]
+        public IActionResult Update(Turno turno)
+        {
+            try
+            {
+                ModelState.Remove("turno.DiaHorario");
+                ModelState.Remove("turno.ObraSocial");
+                ModelState.Remove("turno.Persona.ObraSocial");
+                if (ModelState.IsValid)
+                {
+                    var oldTurno = _workContainer.Turno.GetFirstOrDefault(x => x.ID == turno.ID, includeProperties: "DiaHorario.Horario");
+                    var oldDiaHorarioID = oldTurno.DiaHorarioID;
+                    var oldHora = oldTurno.DiaHorario.Horario.Hora.ToString("HH:mm");
+                    var newTurno = _workContainer.Turno.Update(turno);
+                    object data = new
+                    {
+                        id = newTurno.ID,
+                        nombre = newTurno.Persona.Nombre,
+                        apellido = newTurno.Persona.Apellido,
+                        obraSocial = newTurno.Persona.ObraSocial.Nombre,
+                        obraSocialID = newTurno.Persona.ObraSocialID,
+                        telefono = newTurno.Persona.Telefono,
+                        hora = newTurno.DiaHorario.Horario.Hora.ToString("HH:mm"),
+                        disponible = false,
+                        diaHorarioID = newTurno.DiaHorarioID,
+                        oldDiaHorarioID,
+                        oldHora,
+                    };
+                    return Json(new
+                    {
+                        success = true,
+                        data,
+                        message = "El turno se ha actualizado correctamente",
+                    });
+                }
+                return CustomBadRequest(title: "No se pudo actualizar el turno", message: "Alguno de los datos ingresados no es válido");
+            }
+            catch (Exception)
+            {
+                return CustomBadRequest(title: "No se pudo actualizar el turno", message: "Intente nuevamente o comuníquese para soporte");
             }
         }
 
@@ -185,6 +234,32 @@ namespace Consultorio.Controllers
             catch (Exception)
             {
                 return CustomBadRequest(title: "No se pudo eliminar el horario", message: "Intente nuevamente o comuníquese para soporte");
+            }
+        }
+
+        [HttpGet]
+        [ActionName("GetHorariosDisponibles")]
+        public IActionResult GetHorariosDisponibles(string dateString, long diaHorarioID)
+        {
+            try
+            {
+                DateTime date = DateTime.Parse(dateString);
+                var horarios = _workContainer.DiaHorario.GetHorariosDisponibles(date, diaHorarioID);
+
+                return Json(new
+                {
+                    success = true,
+                    data = horarios.Select(x => new
+                    {
+                        id = x.ID,
+                        hora = x.Horario.Hora.ToString("HH:mm"),
+                        selected = x.ID == diaHorarioID,
+                    }),
+                });
+            }
+            catch (Exception)
+            {
+                return CustomBadRequest(title: "No se pudieron encontrar los horarios disponibles", message: "Intente nuevamente o comuníquese para soporte");
             }
         }
     }

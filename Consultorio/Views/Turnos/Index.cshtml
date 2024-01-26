@@ -27,9 +27,8 @@
     <div id="modal" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
         <div id="formContainer" class="modal-dialog">
             <form id="form-turno" method="POST" asp-area="" asp-controller="Turnos" asp-action="AddTurno">
-                <input type="hidden" name="Turno.ID" value="" />
-                <input type="hidden" name="Turno.DiaHorarioID" value="" />
                 @Html.AntiForgeryToken()
+                <input type="hidden" name="Turno.ID" value="" />
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 id="modalTitle" class="modal-title"></h4>
@@ -59,6 +58,10 @@
                                         <label asp-for="Turno.Persona.ObraSocialID" class="mb-0"></label>
                                         @Html.DropDownListFor(x => x.Turno.Persona.ObraSocialID, Model.ObrasSociales, new { @class = "form-control" })
                                         <span asp-validation-for="Turno.Persona.ObraSocialID" class="text-danger"></span>
+                                    </div><div class="col-12 mb-3">
+                                        <label asp-for="Turno.DiaHorarioID" class="mb-0"></label>
+                                        @Html.DropDownListFor(x => x.Turno.DiaHorarioID, Model.HorariosDisponibles, new { @class = "form-control" })
+                                        <span asp-validation-for="Turno.DiaHorarioID" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
@@ -108,7 +111,7 @@
                                             <td>@Html.DisplayFor(x => turno.DiaHorario.Horario.Hora)</td>
                                             <td><i class="bi bi-x-lg" style="font-size: 1.3rem"></i></td>
                                             <td class="d-flex flex-row">
-                                                <button type='button' class='btn btn-outline-info btn-rounded btn-sm ml-2' onclick='editTurno(@Json.Serialize(horario))'><i class='bi bi-pencil'></i></button>
+                                                <button type='button' class='btn btn-outline-info btn-rounded btn-sm ml-2' onclick='editTurno(@Json.Serialize(turno))'><i class='bi bi-pencil'></i></button>
                                                 <button type='button' class='btn btn-outline-danger btn-rounded btn-sm ml-2' onclick='deleteTurno(@horario.ID)'><i class='bi bi-trash3'></i></button>
                                             </td>
                                         </tr>
@@ -148,6 +151,10 @@
             </div>
         </div>
         <form id="form-searchTurnosByDate" method="get" asp-area="" asp-controller="Turnos" asp-action="SearchByDate">
+            @Html.Hidden("dateString", "")
+        </form>
+        <form id="form-searchHorarios" method="get" asp-area="" asp-controller="Turnos" asp-action="GetHorariosDisponibles">
+            @Html.Hidden("diaHorarioID", "")
             @Html.Hidden("dateString", "")
         </form>
         <form id="form-deleteTurno" method="post" asp-area="" asp-controller="Turnos" asp-action="DeleteTurno">

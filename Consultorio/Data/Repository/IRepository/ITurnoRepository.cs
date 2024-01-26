@@ -9,7 +9,7 @@ namespace Consultorio.Data.Repository.IRepository
 {
     public interface ITurnoRepository : IRepository<Turno>
     {
-        void Update(Turno turno);
+        Turno Update(Turno turno);
         void SoftDelete(long id);
         List<Turno> GetByDate(DateTime date);
         Turno CreateTurno(Turno turno);

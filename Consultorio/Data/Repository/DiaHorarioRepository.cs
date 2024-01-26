@@ -21,13 +21,6 @@ namespace Consultorio.Data.Repository
             _db.SaveChanges();
         }
 
-        public void Update(DiaHorario diaHorario)
-        {
-            var dbObject = _db.DiaHorario.First(x => x.ID == diaHorario.ID) ?? throw new Exception("No se ha encontrado el día");
-            dbObject.UpdatedAt = DateTime.UtcNow.AddHours(-3);
-            _db.SaveChanges();
-        }
-
         public List<DiaHorario> GetHorariosByDate(DateTime date)
         {
             List<DiaHorario> dias = [];
@@ -82,6 +75,16 @@ namespace Consultorio.Data.Repository
             {
                 throw;
             }
+        }
+
+        public List<DiaHorario> GetHorariosDisponibles(DateTime date, long diaHorarioID)
+        {
+            var horariosDisponibles = _db.DiaHorario.Where(x => x.Dia.Date == date.Date && x.Disponible).Include(x => x.Horario).ToList();
+            var diaHorario = _db.DiaHorario.Where(x => x.ID == diaHorarioID).Include(x => x.Horario).First();
+            if (diaHorario is not null && !horariosDisponibles.Contains(diaHorario))
+                horariosDisponibles.Add(diaHorario);
+
+            return [.. horariosDisponibles.OrderBy(x => x.Horario.Hora)];
         }
     }
 }

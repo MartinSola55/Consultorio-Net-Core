@@ -15,6 +15,7 @@ namespace Consultorio.Models
         public long PersonaID { set; get; }
 
         [Required(ErrorMessage = "Debes añadir un día y un horario")]
+        [DisplayName("Horario")]
         public long DiaHorarioID { set; get; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow.AddHours(-3);
