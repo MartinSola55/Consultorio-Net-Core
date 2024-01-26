@@ -53,7 +53,7 @@ namespace Consultorio.Controllers
                 DetallesViewModel viewModel = new()
                 {
                     Paciente = paciente,
-                    ObraSociales = _workContainer.ObraSocial.GetDropDownList(),
+                    ObrasSociales = _workContainer.ObraSocial.GetDropDownList(),
                 };
                 return View(viewModel);
             }
@@ -76,6 +76,7 @@ namespace Consultorio.Controllers
                     success = true,
                     data = pacientes.Select(x => new
                     {
+                        Id = x.ID,
                         Nombre = x.Nombre,
                         Apellido = x.Apellido,
                         Telefono = x.Telefono ?? "-",
@@ -170,6 +171,27 @@ namespace Consultorio.Controllers
             catch (Exception e)
             {
                 return CustomBadRequest(title: "Error al crear la obra social", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("SoftDelete")]
+        public IActionResult SoftDelete(long id)
+        {
+            try
+            {
+                _workContainer.Paciente.SoftDelete(id);
+                return Json(new
+                {
+                    success = true,
+                    data = id,
+                    message = "El paciente se eliminó correctamente",
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "Error al eliminar el paciente", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
             }
         }
     }

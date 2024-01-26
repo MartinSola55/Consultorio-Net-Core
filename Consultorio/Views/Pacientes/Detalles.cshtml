@@ -233,7 +233,7 @@
         $(btn).hide();
         $(btn).next().show();
         $('#pacienteObraSocial').hide();
-        $('#pacienteObraSocial').after(`@Html.DropDownListFor(x => x.Paciente.ObraSocialID, Model.ObraSociales, new { @class = "form-control", @style = "display: none", @id = "newObraSocial" })`);
+        $('#pacienteObraSocial').after(`@Html.DropDownListFor(x => x.Paciente.ObraSocialID, Model.ObrasSociales, new { @class = "form-control", @style = "display: none", @id = "newObraSocial" })`);
         $('#newObraSocial').val(obraSocial);
         $('#newObraSocial').show();
         $('#newObraSocial').focus();

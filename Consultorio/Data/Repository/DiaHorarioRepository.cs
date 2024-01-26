@@ -16,16 +16,9 @@ namespace Consultorio.Data.Repository
 
         public void SoftDelete(long id)
         {
-            try
-            {
-                var dbObject = _db.DiaHorario.First(x => x.ID == id) ?? throw new Exception("No se ha encontrado el día");
-                dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
-                _db.SaveChanges();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            var dbObject = _db.DiaHorario.First(x => x.ID == id) ?? throw new Exception("No se ha encontrado el día");
+            dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
+            _db.SaveChanges();
         }
 
         public void Update(DiaHorario diaHorario)

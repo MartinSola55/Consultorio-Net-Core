@@ -199,7 +199,7 @@ namespace Consultorio.Migrations
                     ID = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     HorarioID = table.Column<short>(type: "smallint", nullable: false),
-                    Dia = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Dia = table.Column<DateTime>(type: "date", nullable: false),
                     Disponible = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -253,7 +253,7 @@ namespace Consultorio.Migrations
                     Nombre = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Apellido = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Correo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Correo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ObraSocialID = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),

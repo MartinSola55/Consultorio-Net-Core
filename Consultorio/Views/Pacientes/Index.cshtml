@@ -58,14 +58,14 @@
                                     <th>Obra social</th>
                                     <th>Fecha nac.</th>
                                     <th>Últ. mod.</th>
-                                    <th>Acción</th>
+                                    <th>Eliminar</th>
                                 </tr>
                             </thead>
                             <tbody>
                             </tbody>
                         </table>
                     </div>
-                    <form id="form-state" method="post" asp-area="" asp-controller="Pacientes" asp-action="SoftDelete">
+                    <form id="form-delete" method="post" asp-area="" asp-controller="Pacientes" asp-action="SoftDelete">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="">
                     </form>
@@ -82,124 +82,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    function createDate(dateString) {
-        let date = new Date(dateString);
-        let day = ("0" + date.getDate()).slice(-2);
-        let month = ("0" + (date.getMonth() + 1)).slice(-2);
-        let year = date.getFullYear();
-        return day + "/" + month + "/" + year;
-    }
-
-    function loadingRow() {
-        $('#PacientesTable tbody').empty();
-        let loadingRow = `<tr>
-                    <td>
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="sr-only">Cargando...</span>
-                        </div>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>`;
-        $('#PacientesTable tbody').append($(loadingRow));
-    }
-
-    function errorRow() {
-        $('#PacientesTable tbody').empty();
-        let row = `<tr>
-                            <td><h6 class="text-danger">No se pudo cargar la información</h6></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>`;
-        $('#PacientesTable tbody').append($(row));
-    }
-
-    function fillTable(pacientes) {
-        $('#PacientesTable tbody').empty();
-        pacientes.forEach(item => {
-            let row = `
-                <tr data-id="${item.id}">
-                    <td><a href="/Pacientes/Detalles/${item.id}" target="_blank">${item.nombre}</a></td>
-                    <td>${item.apellido}</td>
-                    <td>${item.direccion}</td>
-                    <td>${item.localidad}</td>
-                    <td>${item.telefono}</td>
-                    <td>${item.obraSocial}</td>
-                    <td>${item.fechaNacimiento}</td>
-                    <td>${item.updatedAt}</td>
-                    <td class='d-flex flex-row justify-content-center'>
-                        <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})'><i class="bi bi-pencil"></i></button>
-                    </td>
-                </tr>`;
-            $('#PacientesTable tbody').append($(row));
-        });
-    }
-    moment.locale('es');
-    $('#DatePicker').daterangepicker({
-        singleDatePicker: true,
-        showDropdowns: true
-    });
-
-    $(document).ready(function () {
-        let timeoutId;
-        $('#NombreApellido').on('input', function () {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(searchByName, 1000);
-        });
-
-        $('#DatePicker').on('change', function () {
-            loadingRow();
-            searchByDate();
-        });
-    });
-
-    function searchByName() {
-        const name = $('#NombreApellido').val();
-        if (name.length < 4) return toastrWarning("Debes ingresar al menos 4 caracteres para buscar por nombre o apellido");
-        loadingRow();
-        const form = $('#form-searchNombreApellido');
-        $(form).find('input[name="words"]').val(name);
-        $.ajax({
-            url: $(form).attr('action'),
-            method: $(form).attr('method'),
-            data: $(form).serialize(),
-            success: function (response) {
-                fillTable(response.data)
-            },
-            error: function (response) {
-                errorRow();
-            }
-        });
-    }
-
-    function searchByDate() {
-        const date = $('#DatePicker').val();
-        const form = $('#form-searchByDate');
-        $(form).find('input[name="date"]').val(date);
-        $.ajax({
-            url: $(form).attr('action'),
-            method: $(form).attr('method'),
-            data: $(form).serialize(),
-            success: function (response) {
-                fillTable(response.data)
-            },
-            error: function (response) {
-                errorRow();
-            }
-        });
-    }
-</script>

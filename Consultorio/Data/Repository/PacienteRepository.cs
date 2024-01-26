@@ -20,7 +20,7 @@ namespace Consultorio.Data.Repository
         {
             try
             {
-                var dbObject = _db.Paciente.First(x => x.ID == id) ?? throw new Exception("No se ha encontrado el paciente");
+                var dbObject = _db.Paciente.Include(x => x.HistoriasClinicas).First(x => x.ID == id) ?? throw new Exception("No se ha encontrado el paciente");
                 dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
                 dbObject.HistoriasClinicas.ToList().ForEach(x => x.DeletedAt = DateTime.UtcNow.AddHours(-3));
                 _db.SaveChanges();
@@ -113,6 +113,7 @@ namespace Consultorio.Data.Repository
                     .AsNoTracking();
             var list = await query.Select(x => new GetByNameResponse
                 {
+                    Id = x.ID,
                     Nombre = x.Nombre,
                     Apellido = x.Apellido,
                     Telefono = x.Telefono ?? "-",

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace Consultorio.Models
@@ -26,9 +27,11 @@ namespace Consultorio.Models
         public string Telefono { set; get; } = null!;
 
         [EmailAddress(ErrorMessage = "Debes ingresar un formato de email válido")]
-        public string Correo { set; get; } = null!;
+        [AllowNull]
+        public string? Correo { set; get; } = null!;
 
         [Required(ErrorMessage = "Debes seleccionar una obra social")]
+        [DisplayName("Obra social")]
         public long ObraSocialID { set; get; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow.AddHours(-3);

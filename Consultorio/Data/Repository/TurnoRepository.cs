@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Consultorio.Data.Repository.IRepository;
 using Consultorio.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Consultorio.Data.Repository
 {
@@ -15,16 +16,11 @@ namespace Consultorio.Data.Repository
 
         public void SoftDelete(long id)
         {
-            try
-            {
-                var dbObject = _db.Turno.First(x => x.ID == id) ?? throw new Exception("No se ha encontrado el turno");
-                dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
-                _db.SaveChanges();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            var dbObject = _db.Turno.Include(x => x.Persona).Include(x => x.DiaHorario).First(x => x.DiaHorarioID == id) ?? throw new Exception("No se ha encontrado el turno");
+            dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
+            dbObject.Persona.DeletedAt = DateTime.UtcNow.AddHours(-3);
+            dbObject.DiaHorario.Disponible = true;
+            _db.SaveChanges();
         }
 
         public void Update(Turno turno)
@@ -34,5 +30,32 @@ namespace Consultorio.Data.Repository
             _db.SaveChanges();
         }
 
+        public List<Turno> GetByDate(DateTime date)
+        {
+            return [
+                .. 
+                _db.Turno.Where(x => x.DiaHorario.Dia.Date == date.Date)
+                .Include(x => x.Persona)
+                    .ThenInclude(x => x.ObraSocial)
+                .Include(x => x.DiaHorario)
+                    .ThenInclude(x => x.Horario)
+                .OrderBy(x => x.DiaHorario.Horario)
+                .ToList()
+            ];
+        }
+
+        public Turno CreateTurno(Turno turno)
+        {
+            _db.Turno.Add(turno);
+            var diaHorario = _db.DiaHorario.First(x => x.ID == turno.DiaHorarioID);
+            diaHorario.Disponible = false;
+            _db.SaveChanges();
+            return _db.Turno
+                .Include(x => x.Persona)
+                    .ThenInclude(x => x.ObraSocial)
+                .Include(x => x.DiaHorario)
+                    .ThenInclude(x => x.Horario)
+                .First(x => x.ID == turno.ID);
+        }
     }
 }

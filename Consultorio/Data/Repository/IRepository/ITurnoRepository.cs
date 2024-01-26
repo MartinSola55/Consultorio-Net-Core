@@ -11,5 +11,7 @@ namespace Consultorio.Data.Repository.IRepository
     {
         void Update(Turno turno);
         void SoftDelete(long id);
+        List<Turno> GetByDate(DateTime date);
+        Turno CreateTurno(Turno turno);
     }
 }
