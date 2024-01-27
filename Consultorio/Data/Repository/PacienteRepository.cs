@@ -99,7 +99,7 @@ namespace Consultorio.Data.Repository
 
         public List<Paciente> GetByNacimiento(DateTime nacimiento)
         {
-            return [.. _db.Paciente.Where(x => x.FechaNacimiento.Date == nacimiento.Date).Include(x => x.ObraSocial) ];
+            return [.. _db.Paciente.Where(x => x.FechaNacimiento.Date == nacimiento.Date).Include(x => x.ObraSocial).OrderBy(x => x.Apellido).ThenBy(x => x.Nombre) ];
         }
 
         public async Task<List<GetByNameResponse>> GetByNombreApellido(string words)
@@ -123,6 +123,8 @@ namespace Consultorio.Data.Repository
                     ObraSocial = x.ObraSocial.Nombre,
                     UpdatedAt = x.UpdatedAt.ToString("dd/MM/yyyy")
                 })
+                .OrderBy(x => x.Apellido)
+                .ThenBy(x => x.Nombre)
                 .ToListAsync();
             return list;
         }

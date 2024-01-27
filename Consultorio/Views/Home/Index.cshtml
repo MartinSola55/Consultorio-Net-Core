@@ -16,7 +16,11 @@
         <div class="col-12 col-md-10 col-xl-8">
             <div class="card shadow">
                 <div class="card-body">
-                    <h1 class="card-title text-center">Reserva de turnos</h1>
+                    <h1 class="card-title text-center">Reserva de turnos - San Carlos Centro</h1>
+                    @* <hr class="pb-1" /> *@
+                    <p class="mb-1"><i class="bi bi-info-circle"></i> Lunes, martes, miércoles y viernes de 09:00 a 13:00 hs.</p>
+                    <p class="mb-1"><i class="bi bi-info-circle"></i> Si desea modificar su turno, ingrese a la sección "Modificar turno".</p>
+                    <p class="mb-1"><i class="bi bi-info-circle"></i> Para cancelar un turno, comunicarse telefónicamente al 03404-420923 / 3404-520532.</p>
                     <hr class="pb-4" />
                     <form id="form-turno" method="post" asp-area="" asp-controller="Turnos" asp-action="CreateByPaciente" class="form-material">
                         @Html.AntiForgeryToken()
@@ -24,31 +28,31 @@
                             <div class="form-group col-12 col-sm-6">
                                 <input name="Turno.Persona.Nombre" type="text" class="form-control form-control-line">
                                 <span class="help-block text-muted">
-                                    <small>Nombre</small>
+                                    <small><b>Nombre</b></small>
                                 </span>
                             </div>
                             <div class="form-group col-12 col-sm-6">
                                 <input name="Turno.Persona.Apellido" type="text" class="form-control form-control-line">
                                 <span class="help-block text-muted">
-                                    <small>Apellido</small>
+                                    <small><b>Apellido</b></small>
                                 </span>
                             </div>
                             <div class="form-group col-12 col-sm-6">
                                 <input name="Turno.Persona.Telefono" type="tel" class="form-control form-control-line">
                                 <span class="help-block text-muted">
-                                    <small>Teléfono (sin 0 ni 15)</small>
+                                    <small><b>Teléfono (sin 0 ni 15)</b></small>
                                 </span>
                             </div>
                             <div class="form-group col-12 col-sm-6">
                                 @Html.DropDownListFor(x => x.Turno.Persona.ObraSocialID, Model.ObrasSociales, new { @class = "form-control form-control-line" })
                                 <span class="help-block text-muted">
-                                    <small>Obra social</small>
+                                    <small><b>Obra social</b></small>
                                 </span>
                             </div>
                             <div class="form-group col-12 col-sm-6">
                                 <input id="DatePicker" type="text" class="form-control form-control-line" placeholder="dd/mm/aaaa">
                                 <span class="help-block text-muted">
-                                    <small>Día</small>
+                                    <small><b>Día</b></small>
                                 </span>
                             </div>
                             <div class="form-group col-12 col-sm-6">
@@ -56,13 +60,13 @@
                                     <option value="">Primero seleccione un día</option>
                                 </select>
                                 <span class="help-block text-muted">
-                                    <small>Horario</small>
+                                    <small><b>Horario</b></small>
                                 </span>
                             </div>
                             <div class="form-group col-12">
                                 <input name="Turno.Persona.Correo" type="email" class="form-control form-control-line">
                                 <span class="help-block text-muted">
-                                    <small>Email (opcional)</small>
+                                    <small><b>Email (opcional)</b></small>
                                 </span>
                             </div>
                             <div class="col-12 d-flex justify-content-end">
