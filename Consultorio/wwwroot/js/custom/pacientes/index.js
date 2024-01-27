@@ -31,7 +31,7 @@ function errorRow() {
     $('#PacientesTable tbody').empty();
     let row = `
     <tr>
-        <td><h6 class="text-danger">No se pudo cargar la informaci�n</h6></td>
+        <td><h6 class="text-danger">No se pudo cargar la información</h6></td>
         <td></td>
         <td></td>
         <td></td>
@@ -124,8 +124,8 @@ function searchByDate() {
 
 function softDelete(paciente) {
     Swal.fire({
-        title: `�Seguro deseas eliminar al paciente ${paciente.apellido}, ${paciente.nombre}?`,
-        html: "No podr�s revertir esta acci�n<br/>Se eliminar�n tambi�n todas sus historias clinicas",
+        title: `¿Seguro deseas eliminar al paciente ${paciente.apellido}, ${paciente.nombre}?`,
+        html: "No podrás revertir esta acción<br/>Se eliminarán también todas sus historias clínicas",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Confirmar',

@@ -249,6 +249,8 @@
                         window.location.reload();
                     }
                 });
+                $(btn).attr('disabled', false);
+                $(btn).html('Confirmar nuevo turno');
             },
             error: function (response) {
                 toastrWarning(response.responseJSON.message, response.responseJSON.title);

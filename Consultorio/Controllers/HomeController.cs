@@ -18,10 +18,6 @@ namespace Consultorio.Controllers
         {
             try
             {
-                ApplicationUser user = _workContainer.ApplicationUser.GetFirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-                if (user is not null)
-                    return View("~/Views/Home/AdminIndex.cshtml");
-
                 IndexViewModel viewModel = new()
                 {
                     Turno = new Turno(),

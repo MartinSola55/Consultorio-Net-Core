@@ -66,6 +66,12 @@
                     <li id="navTurno" class="nav-item">
                         <a class="nav-link" asp-area="" asp-controller="Home" asp-action="ModificarTurno">Modificar turno</a>
                     </li>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Turnos" asp-action="Index">Turnos</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </nav>
