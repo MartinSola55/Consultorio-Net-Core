@@ -5,6 +5,7 @@ namespace Consultorio.Models
     public class Constants
     {
         public const string Admin = "ADMIN";
+        public const int MaximosDiasReserva = 15;
     }
 
     public class Consultorios
@@ -17,6 +18,7 @@ namespace Consultorio.Models
         public string Telefono { get; set; } = "";
         public string? Celular { get; set; }
     }
+
     public static class EnumExtensions
     {
         public static string GetDisplayName(this Enum value)

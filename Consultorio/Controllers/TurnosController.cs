@@ -1,3 +1,4 @@
+using System.Security.Policy;
 using Consultorio.Data.Repository.IRepository;
 using Consultorio.Models;
 using Consultorio.Models.ViewModels.Turnos;
@@ -68,7 +69,8 @@ namespace Consultorio.Controllers
                             diaHorarioID = diaHorario.ID,
                             obraSocialID = turno.Persona.ObraSocialID,
                         });
-                    } else
+                    }
+                    else
                     {
                         data.Add(new
                         {
@@ -91,7 +93,7 @@ namespace Consultorio.Controllers
             }
             catch (Exception)
             {
-                return CustomBadRequest(title: "No se encontraron los turnos", message: "Intente nuevamente o comuníquese para soporte");
+                return CustomBadRequest(title: "No se encontraron los turnos", message: "Intente nuevamente o comunï¿½quese para soporte");
             }
         }
 
@@ -121,7 +123,7 @@ namespace Consultorio.Controllers
                         disponible = false,
                         diaHorarioID = newTurno.DiaHorarioID,
                     };
-                    
+
                     return Json(new
                     {
                         success = true,
@@ -129,11 +131,11 @@ namespace Consultorio.Controllers
                         message = "El turno se ha guardado correctamente",
                     });
                 }
-                return CustomBadRequest(title: "No se pudo guardar el turno", message: "Alguno de los datos ingresados no es válido");
+                return CustomBadRequest(title: "No se pudo guardar el turno", message: "Alguno de los datos ingresados no es vï¿½lido");
             }
             catch (Exception)
             {
-                return CustomBadRequest(title: "No se pudo guardar el turno", message: "Intente nuevamente o comuníquese para soporte");
+                return CustomBadRequest(title: "No se pudo guardar el turno", message: "Intente nuevamente o comunï¿½quese para soporte");
             }
         }
 
@@ -150,21 +152,46 @@ namespace Consultorio.Controllers
                 if (ModelState.IsValid)
                 {
                     if (_workContainer.Turno.CheckDuplicate(turno))
-                        return CustomBadRequest(title: "Error", message: "Ya existe un turno para ese día y esa persona");
-                    
+                        return CustomBadRequest(title: "Error", message: "Ya existe un turno para ese dï¿½a y esa persona");
+
                     _workContainer.Turno.CreateTurno(turno);
 
                     return Json(new
                     {
                         success = true,
-                        title = "Tu turno se registró correctamente",
+                        title = "Tu turno se registrï¿½ correctamente",
                     });
                 }
-                return CustomBadRequest(title: "No se pudo guardar el turno", message: "Alguno de los datos ingresados no es válido");
+                return CustomBadRequest(title: "No se pudo guardar el turno", message: "Alguno de los datos ingresados no es vï¿½lido");
             }
             catch (Exception)
             {
-                return CustomBadRequest(title: "No se pudo guardar el turno", message: "Intente nuevamente o comuníquese para soporte");
+                return CustomBadRequest(title: "No se pudo guardar el turno", message: "Intente nuevamente o comunï¿½quese para soporte");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("UpdateByPaciente")]
+        public IActionResult UpdateByPaciente(Turno turno)
+        {
+            try
+            {
+                _workContainer.Turno.UpdateByPaciente(turno);
+
+                return Json(new
+                {
+                    success = true,
+                    title = "Su turno se actualizÃ³ correctamente",
+                });
+            }
+            catch (PolicyException e)
+            {
+                return CustomBadRequest(title: "No se pudo actualizar su turno", message: e.Message);
+            }
+            catch (Exception)
+            {
+                return CustomBadRequest(title: "No se pudo actualizar su turno", message: "Intente nuevamente o comunÃ­quese telefÃ³nicamente");
             }
         }
 
@@ -205,11 +232,11 @@ namespace Consultorio.Controllers
                         message = "El turno se ha actualizado correctamente",
                     });
                 }
-                return CustomBadRequest(title: "No se pudo actualizar el turno", message: "Alguno de los datos ingresados no es válido");
+                return CustomBadRequest(title: "No se pudo actualizar el turno", message: "Alguno de los datos ingresados no es vï¿½lido");
             }
             catch (Exception)
             {
-                return CustomBadRequest(title: "No se pudo actualizar el turno", message: "Intente nuevamente o comuníquese para soporte");
+                return CustomBadRequest(title: "No se pudo actualizar el turno", message: "Intente nuevamente o comunï¿½quese para soporte");
             }
         }
 
@@ -237,7 +264,7 @@ namespace Consultorio.Controllers
             }
             catch (Exception)
             {
-                return CustomBadRequest(title: "No se pudo eliminar el turno", message: "Intente nuevamente o comuníquese para soporte");
+                return CustomBadRequest(title: "No se pudo eliminar el turno", message: "Intente nuevamente o comunï¿½quese para soporte");
             }
         }
 
@@ -264,7 +291,7 @@ namespace Consultorio.Controllers
             }
             catch (Exception)
             {
-                return CustomBadRequest(title: "No se pudo eliminar el horario", message: "Intente nuevamente o comuníquese para soporte");
+                return CustomBadRequest(title: "No se pudo eliminar el horario", message: "Intente nuevamente o comunï¿½quese para soporte");
             }
         }
 
@@ -290,7 +317,7 @@ namespace Consultorio.Controllers
             }
             catch (Exception)
             {
-                return CustomBadRequest(title: "No se pudieron encontrar los horarios disponibles", message: "Intente nuevamente o comuníquese para soporte");
+                return CustomBadRequest(title: "No se pudieron encontrar los horarios disponibles", message: "Intente nuevamente o comunï¿½quese para soporte");
             }
         }
 
@@ -304,8 +331,8 @@ namespace Consultorio.Controllers
                 var turno = _workContainer.Turno.GetTurnoByPaciente(nombre, apellido, date);
 
                 if (turno is null)
-                    return CustomBadRequest(title: "No se encontró su turno", message: "Intente nuevamente o comuníquese telefónicamente");
-                
+                    return CustomBadRequest(title: "No se encontrï¿½ su turno", message: "Intente nuevamente o comunï¿½quese telefï¿½nicamente");
+
                 var horarios = _workContainer.DiaHorario.GetHorariosDisponibles(turno.DiaHorario.Dia, turno.DiaHorarioID, includeTurno: false);
                 return Json(new
                 {
@@ -328,7 +355,7 @@ namespace Consultorio.Controllers
             }
             catch (Exception e)
             {
-                return CustomBadRequest(title: "No se encontró su turno", message: "Intente nuevamente o comuníquese telefónicamente", error: e.Message);
+                return CustomBadRequest(title: "No se encontrï¿½ su turno", message: "Intente nuevamente o comunï¿½quese telefï¿½nicamente", error: e.Message);
             }
         }
     }

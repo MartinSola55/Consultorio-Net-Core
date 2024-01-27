@@ -19,7 +19,8 @@
                     <h1 class="card-title text-center">Modificar mi turno</h1>
                     <hr class="pb-4" />
                     <h4 id="oldTurnoInfo"></h4>
-                    <form id="form-turno" method="get" asp-area="" asp-controller="Turnos" asp-action="GetTurnoByPaciente" class="form-material">
+                    <form id="form-turno" method="get" asp-area="" asp-controller="Turnos"
+                        asp-action="GetTurnoByPaciente" class="form-material">
                         <div class="row">
                             <div id="nombreContainer" class="form-group col-12 col-sm-6">
                                 <input name="nombre" type="text" class="form-control form-control-line">
@@ -34,7 +35,8 @@
                                 </span>
                             </div>
                             <div class="form-group col-12 col-sm-6">
-                                <input id="DatePicker" name="dateString" type="text" class="form-control form-control-line" placeholder="dd/mm/aaaa">
+                                <input id="DatePicker" name="dateString" type="text"
+                                    class="form-control form-control-line" placeholder="dd/mm/aaaa">
                                 <span class="help-block text-muted">
                                     <small>Ingrese el día del turno</small>
                                 </span>
@@ -46,7 +48,8 @@
                                 </span>
                             </div>
                             <div class="col-12 d-flex justify-content-end">
-                                <button onclick="searchTurno(this)" type="button" class="btn btn-dark">Buscar turno</button>
+                                <button onclick="searchTurno(this)" type="button" class="btn btn-dark">Buscar
+                                    turno</button>
                             </div>
                         </div>
                     </form>
@@ -58,6 +61,7 @@
 
 <form id="form-confirm" method="post" asp-area="" asp-controller="Turnos" asp-action="UpdateByPaciente">
     @Html.Hidden("ID", "")
+    @Html.Hidden("DiaHorarioID", "")
 </form>
 
 <form id="form-horarios" method="get" asp-area="" asp-controller="Horarios" asp-action="GetDisponibles">
@@ -72,15 +76,26 @@
         $('#DatePicker').daterangepicker({
             singleDatePicker: true,
             showDropdowns: true,
+            minDate: moment().add(1, 'days'),
+            maxDate: moment().add(@Constants.MaximosDiasReserva, 'days'),
             isInvalidDate: function (date) {
                 if (date.day() == 1 || date.day() == 2 || date.day() == 3 || date.day() == 5)
                     return false;
+
                 return true;
             },
         });
         $('#DatePicker').val('');
 
         $('#DatePicker').on('change', function () {
+            const date = moment($('#DatePicker').val(), 'DD/MM/YYYY');
+            const tomorrow = moment().add(1, 'days');
+            const maxDate = moment().add(@Constants.MaximosDiasReserva, 'days');
+            if ((date.isBefore(tomorrow) || date.isAfter(maxDate))) {
+                toastrWarning('Debes seleccionar una fecha válida', 'Error');
+                $('#DatePicker').val('');
+                return;
+            }
             if (onEditMode) {
                 searchHorarios($('#DatePicker').val());
             }
@@ -159,10 +174,10 @@
         $('#nombreContainer').hide();
         $('#apellidoContainer').hide();
         $('#horarioContainer').show();
-        $('form-confirm').find('input[name="ID"]').val(data.turno.id);
+        $('#form-confirm').find('input[name="ID"]').val(data.turno.id);
         $('#oldTurnoInfo').html(`Su turno actual es el día <b>${data.turno.dia}</b> a las <b>${data.turno.hora}</b> hs.`);
         onEditMode = true;
-        fillComboHorarios(data.horarios);       
+        fillComboHorarios(data.horarios);
     }
 
     function fillComboHorarios(horarios) {
@@ -198,6 +213,47 @@
             },
             error: function (response) {
                 toastrWarning(response.responseJSON.message, response.responseJSON.title);
+            }
+        });
+    }
+
+    function confirmTurno(btn) {
+        const diaHorarioID = $('select[name="DiaHorarioID"]').val();
+        if (diaHorarioID === '') {
+            toastrWarning('Debes seleccionar un horario', 'Error');
+            return;
+        }
+        if ($('#DatePicker').val() === '') {
+            toastrWarning('Debes seleccionar un día', 'Error');
+            return;
+        }
+
+        const form = $('#form-confirm');
+        $(form).find('input[name="DiaHorarioID"]').val(diaHorarioID);
+        $(btn).prop("disabled", true);
+        $(btn).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        $.ajax({
+            url: $(form).attr('action'),
+            method: $(form).attr('method'),
+            data: $(form).serialize(),
+            success: function (response) {
+                Swal.fire({
+                    title: response.title,
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.value) {
+                        window.location.reload();
+                    }
+                });
+            },
+            error: function (response) {
+                toastrWarning(response.responseJSON.message, response.responseJSON.title);
+                $(btn).attr('disabled', false);
+                $(btn).html('Confirmar nuevo turno');
             }
         });
     }
