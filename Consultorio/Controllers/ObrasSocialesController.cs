@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Consultorio.Controllers
 {
-    [Authorize(Roles = Constants.Admin)]
+    [Authorize]
     public class ObrasSocialesController(IWorkContainer workContainer) : Controller
     {
         private readonly IWorkContainer _workContainer = workContainer;

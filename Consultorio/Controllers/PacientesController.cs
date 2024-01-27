@@ -1,6 +1,7 @@
 ﻿using Consultorio.Data.Repository.IRepository;
 using Consultorio.Models;
 using Consultorio.Models.ViewModels.Pacientes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using System.ComponentModel.DataAnnotations;
@@ -8,6 +9,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Consultorio.Controllers
 {
+    [Authorize]
     public class PacientesController(IWorkContainer workContainer) : Controller
     {
         private readonly IWorkContainer _workContainer = workContainer;
