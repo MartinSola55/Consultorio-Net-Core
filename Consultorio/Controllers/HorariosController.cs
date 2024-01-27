@@ -4,6 +4,8 @@ using Consultorio.Models;
 using Microsoft.AspNetCore.Mvc;
 using Consultorio.Models.ViewModels.Horarios;
 using NuGet.Common;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Policy;
 
 namespace Consultorio.Controllers
 {
@@ -23,6 +25,7 @@ namespace Consultorio.Controllers
 
         [HttpGet]
         [ActionName("Index")]
+        [Authorize]
         public IActionResult Index()
         {
             try
@@ -42,6 +45,7 @@ namespace Consultorio.Controllers
 
         [HttpPost]
         [ActionName("Save")]
+        [Authorize]
         public IActionResult Save(string horarios, string dateFrom, string dateTo)
         {
             try
@@ -67,6 +71,12 @@ namespace Consultorio.Controllers
             try
             {
                 DateTime date = DateTime.Parse(dateString);
+
+                if (User.Identity is not null && User.Identity.IsAuthenticated)
+                {
+                    DateTime today = DateTime.UtcNow.AddHours(-3);
+                    if (date.Date < today.Date || date.Date > today.AddDays(Constants.MaximosDiasReserva).Date) throw new PolicyException("Debes ingresar una fecha válida");
+                }
                 var horarios = _workContainer.Horario.GetDisponibles(date);
                 return Json(new
                 {
@@ -77,6 +87,10 @@ namespace Consultorio.Controllers
                         hora = x.Horario.Hora.ToString("HH:mm"),
                     })
                 });
+            }
+            catch (PolicyException e)
+            {
+                return CustomBadRequest(title: "No se pueden buscar los horarios", message: e.Message);
             }
             catch (Exception e)
             {

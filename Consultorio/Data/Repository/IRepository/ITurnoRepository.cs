@@ -13,7 +13,7 @@ namespace Consultorio.Data.Repository.IRepository
         void UpdateByPaciente(Turno turno);
         void SoftDelete(long id);
         List<Turno> GetByDate(DateTime date);
-        Turno CreateTurno(Turno turno);
+        Turno CreateTurno(Turno turno, bool byPaciente = true);
         bool CheckDuplicate(Turno turno);
         Turno? GetTurnoByPaciente(string nombre, string apellido, DateTime date);
     }

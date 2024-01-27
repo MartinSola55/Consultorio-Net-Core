@@ -65,8 +65,11 @@ namespace Consultorio.Data.Repository
             ];
         }
 
-        public Turno CreateTurno(Turno turno)
+        public Turno CreateTurno(Turno turno, bool byPaciente = true)
         {
+            if (byPaciente && CheckDuplicate(turno))
+                throw new PolicyException("Ya tienes un turno para ese día");
+
             _db.Turno.Add(turno);
             var diaHorario = _db.DiaHorario.First(x => x.ID == turno.DiaHorarioID);
             diaHorario.Disponible = false;

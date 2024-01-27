@@ -109,7 +109,7 @@ namespace Consultorio.Controllers
                 ModelState.Remove("turno.Persona.ObraSocial");
                 if (ModelState.IsValid)
                 {
-                    var newTurno = _workContainer.Turno.CreateTurno(turno);
+                    var newTurno = _workContainer.Turno.CreateTurno(turno, byPaciente: false);
 
                     object data = new
                     {
@@ -151,9 +151,6 @@ namespace Consultorio.Controllers
                 ModelState.Remove("turno.Persona.ObraSocial");
                 if (ModelState.IsValid)
                 {
-                    if (_workContainer.Turno.CheckDuplicate(turno))
-                        return CustomBadRequest(title: "Error", message: "Ya existe un turno para ese día y esa persona");
-
                     _workContainer.Turno.CreateTurno(turno);
 
                     return Json(new
@@ -163,6 +160,10 @@ namespace Consultorio.Controllers
                     });
                 }
                 return CustomBadRequest(title: "No se pudo guardar su turno", message: "Alguno de los datos ingresados no es válido");
+            }
+            catch (PolicyException e)
+            {
+                return CustomBadRequest(title: "No se pudo guardar su turno", message: e.Message);
             }
             catch (Exception)
             {
