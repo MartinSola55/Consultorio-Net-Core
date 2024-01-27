@@ -9,6 +9,6 @@ namespace Consultorio.Data.Repository.IRepository
 {
     public interface IHorarioRepository : IRepository<Horario>
     {
-
+        List<DiaHorario> GetDisponibles(DateTime date);
     }
 }

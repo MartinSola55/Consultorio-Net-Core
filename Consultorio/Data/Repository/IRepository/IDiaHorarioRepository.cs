@@ -12,6 +12,6 @@ namespace Consultorio.Data.Repository.IRepository
         void SoftDelete(long id);
         List<DiaHorario> GetHorariosByDate(DateTime date);
         void SaveNew(short[] ids, string dateFrom, string dateTo);
-        List<DiaHorario> GetHorariosDisponibles(DateTime date, long diaHorarioID);
+        List<DiaHorario> GetHorariosDisponibles(DateTime date, long diaHorarioID, bool includeTurno = true);
     }
 }

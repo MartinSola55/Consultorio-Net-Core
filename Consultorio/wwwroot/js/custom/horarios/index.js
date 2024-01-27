@@ -49,26 +49,11 @@ function save() {
         method: $(form).attr('method'),
         data: $(form).serialize(),
         success: function (response) {
-            Swal.fire({
-                title: response.message,
-                icon: 'success',
-                showCancelButton: false,
-                confirmButtonColor: '#1e88e5',
-                confirmButtonText: 'OK',
-                allowOutsideClick: false,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.reload();
-                }
-            });
+            toastrSuccess(response.message);
+            $('input[type="checkbox"]').prop('checked', false);
         },
         error: function (errorThrown) {
-            Swal.fire({
-                icon: 'error',
-                title: errorThrown.responseJSON.title,
-                html: errorThrown.responseJSON.message + "<br/>" + errorThrown.responseJSON.error,
-                confirmButtonColor: '#1e88e5',
-            });
+            toastrWarning(errorThrown.responseJSON.message, errorThrown.responseJSON.title);
         }
     });
 }

@@ -19,8 +19,6 @@
     <link rel="stylesheet" href="~/css/default-dark.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-    <link rel="stylesheet" href="~/lib/Magnific-Popup-master/dist/magnific-popup.css" />
-
 
     <!-- Scripts -->
     <script src="~/lib/jquery/jquery.min.js"></script>
@@ -53,24 +51,46 @@
     </div>
 
     <div id="main-wrapper">
-        <partial name="_LoginPartial" />
+        <nav class="navbar navbar-expand navbar-dark bg-dark">
+            <a class="navbar-brand mr-0" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="~/images/logo.png" alt="Logo" class="p-2" style="width: 280px; height: 60px;">
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li id="navHome" class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
+                    </li>
+                    <li id="navContacto" class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contacto">Contacto</a>
+                    </li>
+                    <li id="navTurno" class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="ModificarTurno">Modificar turno</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-        <main role="main" class="@(SignInManager.IsSignedIn(User) ? "page-wrapper" : "")">
+        <main role="main" class="page-wrapper ml-0 pt-5">
             @RenderBody()
         </main>
 
-        @if (SignInManager.IsSignedIn(User))
-        {
-            <footer class="footer">
-                &copy; @DateTime.UtcNow.AddHours(-3).Year - Consultorio Sola
-            </footer>
-        }
+        <footer class="footer" style="left: 0 !important">
+            &copy; @DateTime.UtcNow.AddHours(-3).Year - Consultorio Sola
+        </footer>
     </div>
 
-    @await RenderSectionAsync("Scripts", required: false)
+    <style>
+        .navbar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+
     <script>
         toastr.options = {
-            positionClass: "toast-bottom-right",
+            positionClass: "toast-bottom-full-width",
             preventDuplicates: true,
             progressBar: true,
             onclick: null,
@@ -82,7 +102,10 @@
         function toastrSuccess(message, title = "") {
             return toastr.success(
                 message,
-                title
+                title,
+                {
+                    showDuration: 700,
+                }
             );
         };
 

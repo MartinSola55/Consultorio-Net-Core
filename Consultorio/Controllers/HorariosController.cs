@@ -59,5 +59,29 @@ namespace Consultorio.Controllers
                 return CustomBadRequest(title: "Error", message: "No se ha podido guardar los horarios", error: e.Message);
             }
         }
+
+        [HttpGet]
+        [ActionName("GetDisponibles")]
+        public IActionResult GetDisponibles(string dateString)
+        {
+            try
+            {
+                DateTime date = DateTime.Parse(dateString);
+                var horarios = _workContainer.Horario.GetDisponibles(date);
+                return Json(new
+                {
+                    success = true,
+                    data = horarios.Select(x => new
+                    {
+                        id = x.ID,
+                        hora = x.Horario.Hora.ToString("HH:mm"),
+                    })
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "Error al buscar los horarios", message: "No se han podido obtener los horarios disponibles", error: e.Message);
+            }
+        }
     }
 }

@@ -1,0 +1,67 @@
+﻿@model Consultorio.Models.ViewModels.Home.ContactoViewModel
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Contacto";
+    Layout = "_MainLayout";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h1 class="card-title text-center">Dónde encontrarme</h1>
+                    <hr class="pb-4"/>
+                    <div class="row justify-content-center">
+                    @foreach (var consultorio in Model.Consultorios)
+                    {
+                        <div class="col-12 col-sm-8 col-md-6 col-xl-4">
+                            <div class="card blog-widget">
+                                <div class="card-body">
+                                    <div class="blog-image">
+                                        <a href="@consultorio.Url" target="_blank"><img src="~/images/@(consultorio.Codigo).jpg" alt="San Carlos Centro" class="img-responsive" /></a>
+                                    </div>
+                                    <h3>@consultorio.Nombre</h3>
+                                    <h2 class="label label-rounded label-info py-2"><i class="bi bi-geo-alt-fill"></i> @consultorio.Ciuidad</h2>
+                                    <p class="card-text">
+                                        <i class="bi bi-house"></i> @consultorio.Direccion <br />
+                                        <i class="bi bi-telephone"></i> @consultorio.Telefono
+                                    </p>
+                                    <div class="d-flex justify-content-end">
+                                        <div>
+                                            <a class="btn btn-danger btn-rounded" href="@consultorio.Url" target="_blank" style="background-color: crimson"><i class="bi bi-geo-alt"></i> Abrir en maps</a>
+                                            @if (consultorio.Celular is not null)
+                                            {
+                                                <a class="btn btn-success btn-rounded ml-3" href="https://wa.me/@consultorio.Celular" target="_blank" style="background-color: limegreen"><i class="bi bi-whatsapp" style="font-size: 1.7rem;"></i></a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#navContacto").addClass("active");
+        $("#navContacto .nav-link").wrapInner("<b></b>");
+
+        ajustarAnchoIframe();
+    });
+
+    function ajustarAnchoIframe() {
+        var primerDivAncho = $(".cardContainer").width();
+        $(".map").width(primerDivAncho - 40);
+    }
+
+    $(window).resize(function () {
+        ajustarAnchoIframe();
+    });
+</script>

@@ -1,5 +1,6 @@
 using Consultorio.Data.Repository.IRepository;
 using Consultorio.Models;
+using Consultorio.Models.ViewModels.Home;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +18,44 @@ namespace Consultorio.Controllers
         {
             try
             {
-                return View();
+                ApplicationUser user = _workContainer.ApplicationUser.GetFirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+                if (user is not null)
+                    return View("~/Views/Home/AdminIndex.cshtml");
+
+                IndexViewModel viewModel = new()
+                {
+                    Turno = new Turno(),
+                    ObrasSociales = _workContainer.ObraSocial.GetDropDownList()
+                };
+                return View(viewModel);
+            }
+            catch (Exception)
+            {
+                return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+            }
+        }
+
+        [HttpGet]
+        [Display(Name = "Contacto")]
+        public IActionResult Contacto()
+        {
+            try
+            {
+                return View(new ContactoViewModel());
+            }
+            catch (Exception)
+            {
+                return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+            }
+        }
+
+        [HttpGet]
+        [Display(Name = "ModificarTurno")]
+        public IActionResult ModificarTurno()
+        {
+            try
+            {
+                return View(new EditTurnoViewModel());
             }
             catch (Exception)
             {

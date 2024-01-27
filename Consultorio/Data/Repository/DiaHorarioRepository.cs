@@ -77,11 +77,11 @@ namespace Consultorio.Data.Repository
             }
         }
 
-        public List<DiaHorario> GetHorariosDisponibles(DateTime date, long diaHorarioID)
+        public List<DiaHorario> GetHorariosDisponibles(DateTime date, long diaHorarioID, bool includeTurno = true)
         {
             var horariosDisponibles = _db.DiaHorario.Where(x => x.Dia.Date == date.Date && x.Disponible).Include(x => x.Horario).ToList();
             var diaHorario = _db.DiaHorario.Where(x => x.ID == diaHorarioID).Include(x => x.Horario).First();
-            if (diaHorario is not null && !horariosDisponibles.Contains(diaHorario))
+            if (includeTurno && diaHorario is not null && !horariosDisponibles.Contains(diaHorario))
                 horariosDisponibles.Add(diaHorario);
 
             return [.. horariosDisponibles.OrderBy(x => x.Horario.Hora)];

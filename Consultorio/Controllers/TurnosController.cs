@@ -126,14 +126,45 @@ namespace Consultorio.Controllers
                     {
                         success = true,
                         data,
-                        message = "El turno se ha agregado correctamente",
+                        message = "El turno se ha guardado correctamente",
                     });
                 }
-                return CustomBadRequest(title: "No se pudo agregar el turno", message: "Alguno de los datos ingresados no es válido");
+                return CustomBadRequest(title: "No se pudo guardar el turno", message: "Alguno de los datos ingresados no es válido");
             }
             catch (Exception)
             {
-                return CustomBadRequest(title: "No se pudo agregar el turno", message: "Intente nuevamente o comuníquese para soporte");
+                return CustomBadRequest(title: "No se pudo guardar el turno", message: "Intente nuevamente o comuníquese para soporte");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("CreateByPaciente")]
+        public IActionResult CreateByPaciente(Turno turno)
+        {
+            try
+            {
+                ModelState.Remove("turno.DiaHorario");
+                ModelState.Remove("turno.ObraSocial");
+                ModelState.Remove("turno.Persona.ObraSocial");
+                if (ModelState.IsValid)
+                {
+                    if (_workContainer.Turno.CheckDuplicate(turno))
+                        return CustomBadRequest(title: "Error", message: "Ya existe un turno para ese día y esa persona");
+                    
+                    _workContainer.Turno.CreateTurno(turno);
+
+                    return Json(new
+                    {
+                        success = true,
+                        title = "Tu turno se registró correctamente",
+                    });
+                }
+                return CustomBadRequest(title: "No se pudo guardar el turno", message: "Alguno de los datos ingresados no es válido");
+            }
+            catch (Exception)
+            {
+                return CustomBadRequest(title: "No se pudo guardar el turno", message: "Intente nuevamente o comuníquese para soporte");
             }
         }
 
@@ -260,6 +291,44 @@ namespace Consultorio.Controllers
             catch (Exception)
             {
                 return CustomBadRequest(title: "No se pudieron encontrar los horarios disponibles", message: "Intente nuevamente o comuníquese para soporte");
+            }
+        }
+
+        [HttpGet]
+        [ActionName("GetTurnoByPaciente")]
+        public IActionResult GetTurnoByPaciente(string nombre, string apellido, string dateString)
+        {
+            try
+            {
+                DateTime date = DateTime.Parse(dateString);
+                var turno = _workContainer.Turno.GetTurnoByPaciente(nombre, apellido, date);
+
+                if (turno is null)
+                    return CustomBadRequest(title: "No se encontró su turno", message: "Intente nuevamente o comuníquese telefónicamente");
+                
+                var horarios = _workContainer.DiaHorario.GetHorariosDisponibles(turno.DiaHorario.Dia, turno.DiaHorarioID, includeTurno: false);
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        turno = new
+                        {
+                            id = turno.ID,
+                            hora = turno.DiaHorario.Horario.Hora.ToString("HH:mm"),
+                            dia = turno.DiaHorario.Dia.ToString("dd/MM/yyyy"),
+                        },
+                        horarios = horarios.Select(x => new
+                        {
+                            id = x.ID,
+                            hora = x.Horario.Hora.ToString("HH:mm"),
+                        }),
+                    },
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "No se encontró su turno", message: "Intente nuevamente o comuníquese telefónicamente", error: e.Message);
             }
         }
     }

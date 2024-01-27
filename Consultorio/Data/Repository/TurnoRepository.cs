@@ -73,5 +73,24 @@ namespace Consultorio.Data.Repository
                     .ThenInclude(x => x.Horario)
                 .First(x => x.ID == turno.ID);
         }
+
+        public bool CheckDuplicate(Turno turno)
+        {
+            var diaHorario = _db.DiaHorario.First(x => x.ID == turno.DiaHorarioID) ?? throw new Exception("No se ha podido validar el turno");
+            return _db.Turno.Any(
+                x => x.Persona.Nombre == turno.Persona.Nombre &&
+                x.Persona.Apellido == turno.Persona.Apellido &&
+                x.DiaHorario.Dia.Date == diaHorario.Dia.Date);
+        }
+
+        public Turno? GetTurnoByPaciente(string nombre, string apellido, DateTime date)
+        {
+            var today = DateTime.UtcNow.AddHours(-3);
+            return _db.Turno
+                .Include(x => x.Persona)
+                .Include(x => x.DiaHorario)
+                    .ThenInclude(x => x.Horario)
+                .FirstOrDefault(x => x.Persona.Nombre == nombre && x.Persona.Apellido == apellido && x.DiaHorario.Dia.Date == date.Date && x.DiaHorario.Dia.Date > today.Date);
+        }
     }
 }

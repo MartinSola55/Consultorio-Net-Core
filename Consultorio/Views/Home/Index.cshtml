@@ -3,4 +3,253 @@
 
 @{
     ViewData["Title"] = "Inicio";
+    Layout = "_MainLayout";
 }
+
+<link href="~/lib/daterangepicker/daterangepicker.css" rel="stylesheet">
+
+<script src="~/lib/moment/moment-with-locales.js"></script>
+<script src="~/lib/daterangepicker/daterangepicker.js"></script>
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-xl-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h1 class="card-title text-center">Reserva de turnos</h1>
+                    <hr class="pb-4" />
+                    <form id="form-turno" method="post" asp-area="" asp-controller="Turnos" asp-action="CreateByPaciente" class="form-material">
+                        @Html.AntiForgeryToken()
+                        <div class="row">
+                            <div class="form-group col-12 col-sm-6">
+                                <input name="Turno.Persona.Nombre" type="text" class="form-control form-control-line">
+                                <span class="help-block text-muted">
+                                    <small>Nombre</small>
+                                </span>
+                            </div>
+                            <div class="form-group col-12 col-sm-6">
+                                <input name="Turno.Persona.Apellido" type="text" class="form-control form-control-line">
+                                <span class="help-block text-muted">
+                                    <small>Apellido</small>
+                                </span>
+                            </div>
+                            <div class="form-group col-12 col-sm-6">
+                                <input name="Turno.Persona.Telefono" type="tel" class="form-control form-control-line">
+                                <span class="help-block text-muted">
+                                    <small>Teléfono (sin 0 ni 15)</small>
+                                </span>
+                            </div>
+                            <div class="form-group col-12 col-sm-6">
+                                @Html.DropDownListFor(x => x.Turno.Persona.ObraSocialID, Model.ObrasSociales, new { @class = "form-control form-control-line" })
+                                <span class="help-block text-muted">
+                                    <small>Obra social</small>
+                                </span>
+                            </div>
+                            <div class="form-group col-12 col-sm-6">
+                                <input id="DatePicker" type="text" class="form-control form-control-line" placeholder="dd/mm/aaaa">
+                                <span class="help-block text-muted">
+                                    <small>Día</small>
+                                </span>
+                            </div>
+                            <div class="form-group col-12 col-sm-6">
+                                <select name="Turno.DiaHorarioID" class="form-control form-control-line" disabled>
+                                    <option value="">Primero seleccione un día</option>
+                                </select>
+                                <span class="help-block text-muted">
+                                    <small>Horario</small>
+                                </span>
+                            </div>
+                            <div class="form-group col-12">
+                                <input name="Turno.Persona.Correo" type="email" class="form-control form-control-line">
+                                <span class="help-block text-muted">
+                                    <small>Email (opcional)</small>
+                                </span>
+                            </div>
+                            <div class="col-12 d-flex justify-content-end">
+                                <button onclick="validateForm()" type="button" class="btn btn-dark">Reservar turno</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="form-horarios" method="get" asp-area="" asp-controller="Horarios" asp-action="GetDisponibles">
+    @Html.Hidden("dateString", "")
+</form>
+
+<style>
+    #toast-container {
+        
+    }
+
+    .toast-success {
+        position: fixed !important;
+        top: 15vh !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
+
+    .toast-success .toast-message {
+        font-size: 2rem !important;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $("#navHome").addClass("active");
+        $("#navHome .nav-link").wrapInner("<b></b>");
+        $('#DatePicker').daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            isInvalidDate: function (date) {
+                if (date.day() == 1 || date.day() == 2 || date.day() == 3 || date.day() == 5)
+                    return false;
+                return true;
+            },
+        });
+        $('#DatePicker').val('');
+        $('#DatePicker').on('change', function () {
+            $('select[name="Turno.DiaHorarioID"]').attr('disabled', false);
+            $('select[name="Turno.DiaHorarioID"]').empty();
+            $('select[name="Turno.DiaHorarioID"]').append('<option value="">Cargando...</option>');
+            const date = $(this).val();
+            const form = $('#form-horarios');
+            $(form).find('input[name="dateString"]').val(date);
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: $(form).serialize(),
+                success: function (response) {
+                    const combo = $('select[name="Turno.DiaHorarioID"]');
+                    $(combo).empty();
+
+                    if (response.data.length === 0) {
+                        $(combo).append('<option value="">Sin horarios disponibles</option>');
+                        $('select[name="Turno.DiaHorarioID"]').attr('disabled', true);
+                        return;
+                    }
+
+                    $(combo).append('<option value="">Seleccione un horario</option>');
+                    combo.find('option:last-child').attr('selected', true)
+                    response.data.forEach(function (item) {
+                        $(combo).append(`<option value="${item.id}">${item.hora}</option>`);
+                    });
+                },
+                error: function (response) {
+                    toastrWarning(response.responseJSON.message, response.responseJSON.title);
+                }
+            });
+        });
+    });
+
+    function validateForm() {
+        const form = $('#form-turno');
+        const nombre = $('input[name="Turno.Persona.Nombre"]').val();
+        const apellido = $('input[name="Turno.Persona.Apellido"]').val();
+        const telefono = $('input[name="Turno.Persona.Telefono"]').val();
+        const obraSocial = $('select[name="Turno.Persona.ObraSocialID"]').val();
+        const date = $('#DatePicker').val();
+        const combo = $('select[name="Turno.DiaHorarioID"]');
+        const horario = $(combo).val();
+        const correo = $('input[name="Turno.Persona.Correo"]').val();
+
+        if (nombre === '') {
+            toastrWarning('Debes ingresar un nombre', 'Error');
+            return;
+        } else if (nombre.length > 30) {
+            toastrWarning('El nombre no puede tener más de 30 caracteres', 'Error');
+            return;
+        } else if (nombre.length < 3) {
+            toastrWarning('El nombre no puede tener menos de 3 caracteres', 'Error');
+            return;
+        }
+
+        if (apellido === '') {
+            toastrWarning('Debes ingresar un apellido', 'Error');
+            return;
+        } else if (apellido.length > 30) {
+            toastrWarning('El apellido no puede tener más de 30 caracteres', 'Error');
+            return;
+        } else if (apellido.length < 3) {
+            toastrWarning('El apellido no puede tener menos de 3 caracteres', 'Error');
+            return;
+        }
+
+        if (telefono === '') {
+            toastrWarning('Debes ingresar un teléfono', 'Error');
+            return;
+        } else if (telefono.length > 12 || telefono.length < 9 || !/^\d+$/.test(telefono)) {
+            toastrWarning('Debes ingresar un teléfono válido', 'Error');
+            return;
+        }
+
+        if (!obraSocial) {
+            toastrWarning('Debes seleccionar una obra social', 'Error');
+            return;
+        }
+
+        if (date === '') {
+            toastrWarning('Debes seleccionar un día', 'Error');
+            return;
+        }
+
+        if (!horario) {
+            toastrWarning('Debes seleccionar un horario', 'Error');
+            return;
+        }
+
+        if (correo && !validateEmail(correo)) {
+            toastrWarning('Debes ingresar un correo válido', 'Error');
+            return;
+        }
+
+        sendForm();
+    }
+
+    function sendForm() {
+        const btn = $('#form-turno button');
+        $(btn).attr('disabled', true);
+        const form = $('#form-turno');
+        $.ajax({
+            url: $(form).attr('action'),
+            method: $(form).attr('method'),
+            data: $(form).serialize(),
+            success: function (response) {
+                Swal.fire({
+                    title: response.title,
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false,
+                });
+                $('#form-turno input:not([type="hidden"]').val('');
+                $('#form-turno select').val('');
+                $(btn).attr('disabled', false);
+            },
+            error: function (response) {
+                Swal.fire({
+                    title: response.responseJSON.title,
+                    icon: 'warning',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false,
+                });
+                $(btn).attr('disabled', false);
+            }
+        });
+    }
+
+    function validateEmail(email) {
+        var regex = /^[a-zA-Z0-9._-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return regex.test(email);
+    }
+</script>

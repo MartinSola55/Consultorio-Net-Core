@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Consultorio.Data.Repository.IRepository;
 using Consultorio.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Consultorio.Data.Repository
 {
@@ -13,6 +14,9 @@ namespace Consultorio.Data.Repository
     {
         private readonly ApplicationDbContext _db = db;
 
-
+        public List<DiaHorario> GetDisponibles(DateTime date)
+        {
+            return [.. _db.DiaHorario.Include(x => x.Horario).Where(x => x.Dia.Date == date.Date && x.Disponible).OrderBy(x => x.Horario.Hora)];
+        }
     }
 }
