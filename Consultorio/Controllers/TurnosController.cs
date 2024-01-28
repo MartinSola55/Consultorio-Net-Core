@@ -4,6 +4,7 @@ using Consultorio.Models;
 using Consultorio.Models.ViewModels.Turnos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol;
 
 namespace Consultorio.Controllers
 {
@@ -292,21 +293,23 @@ namespace Consultorio.Controllers
                 {
                     Turno turnoConfirmed = await _workContainer.Turno.CreateTurno(turno);
 
+                    Exception? emailError = null;
                     if (turnoConfirmed.Persona.Correo is not null or "")
                     {
                         try
                         {
                             await _workContainer.Email.SendConfirmTurno(turnoConfirmed);
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
-
+                            emailError = e;
                         }
                     }
 
                     return Json(new
                     {
                         success = true,
+                        error = (emailError is null ? "" : emailError.ToJson()),
                         title = "Su turno se registró correctamente",
                     });
                 }
