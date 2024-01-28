@@ -8,9 +8,10 @@ using NuGet.Protocol;
 
 namespace Consultorio.Controllers
 {
-    public class TurnosController(IWorkContainer workContainer) : Controller
+    public class TurnosController(IWorkContainer workContainer, IWebHostEnvironment env) : Controller
     {
         private readonly IWorkContainer _workContainer = workContainer;
+        private readonly IWebHostEnvironment _env = env;
         private BadRequestObjectResult CustomBadRequest(string title, string message, string? error = null)
         {
             return BadRequest(new
@@ -306,9 +307,10 @@ namespace Consultorio.Controllers
                             //emailError = "Sin embargo, no se ha podido enviar el email con el recordatorio";
                         }
                     }
-
+                    var asad = _env;
                     return Json(new
                     {
+                        env = _env.ToJson(),
                         success = true,
                         emailError,
                         title = "Su turno se registró correctamente",

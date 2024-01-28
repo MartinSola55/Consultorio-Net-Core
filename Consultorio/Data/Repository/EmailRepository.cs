@@ -36,8 +36,9 @@ namespace Consultorio.Data.Repository
                 To = { new MailAddress(turno.Persona.Correo ?? throw new Exception("No se pudo enviar el email")) }
             };
 
-            string path = Path.Combine(_env.ContentRootPath, "Views", "Emails", "Confirmation.html");
-            string body = File.ReadAllText(path);
+            var file = _env.ContentRootFileProvider.GetDirectoryContents("Views/Emails").First(x => x.Name == "Confirmation.html");
+
+            string body = File.ReadAllText(file.PhysicalPath ?? throw new Exception("No se pudo enviar el email"));
             body = body.Replace("[NOMBRE]", turno.Persona.Apellido + ", " + turno.Persona.Nombre);
             body = body.Replace("[DIA]", turno.DiaHorario.Dia.ToShortDateString());
             body = body.Replace("[HORA]", turno.DiaHorario.Horario.Hora.ToShortTimeString());
