@@ -34,8 +34,7 @@ namespace Consultorio.Data.Repository
                 IsBodyHtml = true,
                 To = { new MailAddress(turno.Persona.Correo ?? throw new Exception("No se pudo enviar el email")) }
             };
-
-            string path = "Views/Emails/Confirmation.html";
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "Views", "Emails", "Confirmation.html");
             string body = File.ReadAllText(path);
             body = body.Replace("[NOMBRE]", turno.Persona.Apellido + ", " + turno.Persona.Nombre);
             body = body.Replace("[DIA]", turno.DiaHorario.Dia.ToShortDateString());

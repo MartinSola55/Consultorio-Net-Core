@@ -293,23 +293,23 @@ namespace Consultorio.Controllers
                 {
                     Turno turnoConfirmed = await _workContainer.Turno.CreateTurno(turno);
 
-                    Exception? emailError = null;
+                    string emailError = "";
                     if (turnoConfirmed.Persona.Correo is not null or "")
                     {
                         try
                         {
                             await _workContainer.Email.SendConfirmTurno(turnoConfirmed);
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
-                            emailError = e;
+                            emailError = "Sin embargo, no se ha podido enviar el email con el recordatorio";
                         }
                     }
 
                     return Json(new
                     {
                         success = true,
-                        error = (emailError is null ? "" : emailError.ToJson()),
+                        emailError,
                         title = "Su turno se registró correctamente",
                     });
                 }

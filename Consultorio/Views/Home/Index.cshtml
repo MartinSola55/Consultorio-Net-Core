@@ -210,6 +210,7 @@
             success: function (response) {
                 Swal.fire({
                     title: response.title,
+                    text: response.emailError,
                     icon: 'success',
                     showCancelButton: false,
                     confirmButtonColor: '#3085d6',
