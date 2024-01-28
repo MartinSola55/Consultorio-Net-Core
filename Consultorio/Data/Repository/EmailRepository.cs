@@ -12,9 +12,10 @@ using System.Net;
 
 namespace Consultorio.Data.Repository
 {
-    public class EmailRepository(IConfiguration config) : IEmailRepository
+    public class EmailRepository(IConfiguration config, IWebHostEnvironment env) : IEmailRepository
     {
         private readonly IConfiguration _config = config;
+        private readonly IWebHostEnvironment _env = env;
 
         public async Task SendConfirmTurno(Turno turno)
         {
@@ -34,7 +35,8 @@ namespace Consultorio.Data.Repository
                 IsBodyHtml = true,
                 To = { new MailAddress(turno.Persona.Correo ?? throw new Exception("No se pudo enviar el email")) }
             };
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "Views", "Emails", "Confirmation.html");
+
+            string path = Path.Combine(_env.ContentRootPath, "Views", "Emails", "Confirmation.html");
             string body = File.ReadAllText(path);
             body = body.Replace("[NOMBRE]", turno.Persona.Apellido + ", " + turno.Persona.Nombre);
             body = body.Replace("[DIA]", turno.DiaHorario.Dia.ToShortDateString());

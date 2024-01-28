@@ -10,18 +10,20 @@ namespace Consultorio.Data.Repository
     {
         private readonly ApplicationDbContext _db;
         private readonly IConfiguration _config;
+        private readonly IWebHostEnvironment _env;
 
-        public WorkContainer(ApplicationDbContext db, IConfiguration config)
+        public WorkContainer(ApplicationDbContext db, IConfiguration config, IWebHostEnvironment env)
         {
             _db = db;
             _config = config;
+            _env = env;
             ApplicationUser = new ApplicationUserRepository(_db);
             ObraSocial = new ObraSocialRepository(_db);
             Turno = new TurnoRepository(_db);
             DiaHorario = new DiaHorarioRepository(_db);
             Horario = new HorarioRepository(_db);
             Paciente = new PacienteRepository(_db);
-            Email = new EmailRepository(_config);
+            Email = new EmailRepository(_config, _env);
         }
 
         public IApplicationUserRepository ApplicationUser { get; private set; }
