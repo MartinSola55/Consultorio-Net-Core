@@ -9,16 +9,19 @@ namespace Consultorio.Data.Repository
     public class WorkContainer : IWorkContainer
     {
         private readonly ApplicationDbContext _db;
+        private readonly IConfiguration _config;
 
-        public WorkContainer(ApplicationDbContext db)
+        public WorkContainer(ApplicationDbContext db, IConfiguration config)
         {
             _db = db;
+            _config = config;
             ApplicationUser = new ApplicationUserRepository(_db);
             ObraSocial = new ObraSocialRepository(_db);
             Turno = new TurnoRepository(_db);
             DiaHorario = new DiaHorarioRepository(_db);
             Horario = new HorarioRepository(_db);
             Paciente = new PacienteRepository(_db);
+            Email = new EmailRepository(_db, _config);
         }
 
         public IApplicationUserRepository ApplicationUser { get; private set; }
@@ -27,6 +30,7 @@ namespace Consultorio.Data.Repository
         public IDiaHorarioRepository DiaHorario { get; private set; }
         public IHorarioRepository Horario { get; private set; }
         public IPacienteRepository Paciente { get; private set; }
+        public IEmailRepository Email { get; private set; }
 
         public void BeginTransaction()
         {

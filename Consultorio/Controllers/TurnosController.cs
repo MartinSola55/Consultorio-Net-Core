@@ -105,7 +105,7 @@ namespace Consultorio.Controllers
         [ValidateAntiForgeryToken]
         [ActionName("Create")]
         [Authorize]
-        public IActionResult Create(Turno turno)
+        public async Task<IActionResult> Create(Turno turno)
         {
             try
             {
@@ -114,7 +114,7 @@ namespace Consultorio.Controllers
                 ModelState.Remove("turno.Persona.ObraSocial");
                 if (ModelState.IsValid)
                 {
-                    var newTurno = _workContainer.Turno.CreateTurno(turno, byPaciente: false);
+                    var newTurno = await _workContainer.Turno.CreateTurno(turno, byPaciente: false);
 
                     object data = new
                     {
@@ -281,7 +281,7 @@ namespace Consultorio.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("CreateByPaciente")]
-        public IActionResult CreateByPaciente(Turno turno)
+        public async Task<IActionResult> CreateByPaciente(Turno turno)
         {
             try
             {
@@ -290,7 +290,19 @@ namespace Consultorio.Controllers
                 ModelState.Remove("turno.Persona.ObraSocial");
                 if (ModelState.IsValid)
                 {
-                    _workContainer.Turno.CreateTurno(turno);
+                    Turno turnoConfirmed = await _workContainer.Turno.CreateTurno(turno);
+
+                    if (turnoConfirmed.Persona.Correo is not null or "")
+                    {
+                        try
+                        {
+                            await _workContainer.Email.SendConfirmTurno(turnoConfirmed);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
 
                     return Json(new
                     {

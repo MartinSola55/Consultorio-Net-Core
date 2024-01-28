@@ -65,22 +65,22 @@ namespace Consultorio.Data.Repository
             ];
         }
 
-        public Turno CreateTurno(Turno turno, bool byPaciente = true)
+        public async Task<Turno> CreateTurno(Turno turno, bool byPaciente = true)
         {
             if (byPaciente && CheckDuplicate(turno))
                 throw new PolicyException("Ya tienes un turno para ese día");
 
-            _db.Turno.Add(turno);
+            await _db.Turno.AddAsync(turno);
             var diaHorario = _db.DiaHorario.First(x => x.ID == turno.DiaHorarioID);
             diaHorario.Disponible = false;
             diaHorario.UpdatedAt = DateTime.UtcNow.AddHours(-3);
-            _db.SaveChanges();
-            return _db.Turno
+            await _db.SaveChangesAsync();
+            return await _db.Turno
                 .Include(x => x.Persona)
                     .ThenInclude(x => x.ObraSocial)
                 .Include(x => x.DiaHorario)
                     .ThenInclude(x => x.Horario)
-                .First(x => x.ID == turno.ID);
+                .FirstAsync(x => x.ID == turno.ID);
         }
 
         public bool CheckDuplicate(Turno turno)
