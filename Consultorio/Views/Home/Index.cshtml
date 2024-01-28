@@ -84,25 +84,6 @@
     @Html.Hidden("dateString", "")
 </form>
 
-<style>
-    #toast-container {
-        
-    }
-
-    .toast-success {
-        position: fixed !important;
-        top: 15vh !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        padding-top: 1rem !important;
-        padding-bottom: 1rem !important;
-    }
-
-    .toast-success .toast-message {
-        font-size: 2rem !important;
-    }
-</style>
-
 <script>
     $(document).ready(function () {
         $("#navHome").addClass("active");
@@ -220,6 +201,7 @@
     function sendForm() {
         const btn = $('#form-turno button');
         $(btn).attr('disabled', true);
+        $(btn).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
         const form = $('#form-turno');
         $.ajax({
             url: $(form).attr('action'),
@@ -238,6 +220,7 @@
                 $('#form-turno input:not([type="hidden"]').val('');
                 $('#form-turno select').val('');
                 $(btn).attr('disabled', false);
+                $(btn).html('Reservar turno');
             },
             error: function (response) {
                 Swal.fire({
@@ -251,6 +234,7 @@
                     allowOutsideClick: false,
                 });
                 $(btn).attr('disabled', false);
+                $(btn).html('Reservar turno');
             }
         });
     }

@@ -12,9 +12,8 @@ using System.Net;
 
 namespace Consultorio.Data.Repository
 {
-    public class EmailRepository(ApplicationDbContext db, IConfiguration config) : IEmailRepository
+    public class EmailRepository(IConfiguration config) : IEmailRepository
     {
-        private readonly ApplicationDbContext _db = db;
         private readonly IConfiguration _config = config;
 
         public async Task SendConfirmTurno(Turno turno)
