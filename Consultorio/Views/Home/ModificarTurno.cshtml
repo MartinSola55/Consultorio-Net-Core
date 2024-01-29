@@ -76,7 +76,7 @@
         $('#DatePicker').daterangepicker({
             singleDatePicker: true,
             showDropdowns: true,
-            minDate: moment().add(1, 'days'),
+            minDate: moment().format('DD/MM/YYYY'),
             maxDate: moment().add(@Constants.MaximosDiasReserva, 'days'),
             isInvalidDate: function (date) {
                 if (date.day() == 1 || date.day() == 2 || date.day() == 3 || date.day() == 5)
@@ -89,9 +89,8 @@
 
         $('#DatePicker').on('change', function () {
             const date = moment($('#DatePicker').val(), 'DD/MM/YYYY');
-            const tomorrow = moment().add(1, 'days');
             const maxDate = moment().add(@Constants.MaximosDiasReserva, 'days');
-            if ((date.isBefore(tomorrow) || date.isAfter(maxDate))) {
+            if (date.isAfter(maxDate)) {
                 toastrWarning('Debes seleccionar una fecha válida', 'Error');
                 $('#DatePicker').val('');
                 return;
@@ -239,6 +238,7 @@
             success: function (response) {
                 Swal.fire({
                     title: response.title,
+                    text: response.emailError,
                     icon: 'success',
                     showCancelButton: false,
                     confirmButtonColor: '#3085d6',

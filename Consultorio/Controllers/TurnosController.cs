@@ -329,25 +329,41 @@ namespace Consultorio.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("UpdateByPaciente")]
-        public IActionResult UpdateByPaciente(Turno turno)
+        public async Task<IActionResult> UpdateByPaciente(Turno turno)
         {
             try
             {
-                _workContainer.Turno.UpdateByPaciente(turno);
+                var oldHorario = turno.DiaHorarioID;
+
+                var newTurno = await _workContainer.Turno.UpdateByPaciente(turno);
+
+                var emailError = "";
+                if (newTurno.Persona.Correo is not null or "")
+                {
+                    try
+                    {
+                        await _workContainer.Email.SendModifyTurno(turno.ID, oldHorario);
+                    }
+                    catch (Exception)
+                    {
+                        emailError = "Sin embargo, no se ha podido enviar el email con el recordatorio";
+                    }
+                }
 
                 return Json(new
                 {
                     success = true,
-                    title = "Su turno se actualizó correctamente",
+                    emailError,
+                    title = "Su turno se modificó correctamente",
                 });
             }
             catch (PolicyException e)
             {
-                return CustomBadRequest(title: "No se pudo actualizar su turno", message: e.Message);
+                return CustomBadRequest(title: "No se pudo modificar su turno", message: e.Message);
             }
             catch (Exception)
             {
-                return CustomBadRequest(title: "No se pudo actualizar su turno", message: "Intente nuevamente o comuníquese telefónicamente");
+                return CustomBadRequest(title: "No se pudo modificar su turno", message: "Intente nuevamente o comuníquese telefónicamente");
             }
         }
 

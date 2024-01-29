@@ -91,7 +91,7 @@
         $('#DatePicker').daterangepicker({
             singleDatePicker: true,
             showDropdowns: true,
-            minDate: moment().add(1, 'days'),
+            minDate: moment().format('DD/MM/YYYY'),
             maxDate: moment().add(@Constants.MaximosDiasReserva, 'days'),
             isInvalidDate: function (date) {
                 if (date.day() == 1 || date.day() == 2 || date.day() == 3 || date.day() == 5)

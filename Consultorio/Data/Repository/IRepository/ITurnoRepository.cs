@@ -14,7 +14,7 @@ namespace Consultorio.Data.Repository.IRepository
 
 
         Turno Update(Turno turno);
-        void UpdateByPaciente(Turno turno);
+        Task<Turno> UpdateByPaciente(Turno turno);
         void SoftDelete(long id);
         List<Turno> GetByDate(DateTime date);
         Task<Turno> CreateTurno(Turno turno, bool byPaciente = true);

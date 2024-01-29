@@ -27,7 +27,7 @@
     <None Include="wwwroot\lib\daterangepicker\daterangepicker.js" />
   </ItemGroup>
   <ItemGroup>
-	  <Content Include="Views\Emails\**" CopyToOutputDirectory="PreserveNewest"/>
+	  <Content Include="Views\Emails\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

@@ -23,7 +23,7 @@ namespace Consultorio.Data.Repository
             DiaHorario = new DiaHorarioRepository(_db);
             Horario = new HorarioRepository(_db);
             Paciente = new PacienteRepository(_db);
-            Email = new EmailRepository(_config, _env);
+            Email = new EmailRepository(_db, _config, _env);
         }
 
         public IApplicationUserRepository ApplicationUser { get; private set; }
