@@ -32,9 +32,10 @@ namespace Consultorio.Controllers
         {
             try
             {
+                DateTime today = DateTime.UtcNow.AddHours(-3);
                 IndexViewModel viewModel = new()
                 {
-                    Turnos = _workContainer.Turno.GetAll(includeProperties: "Persona, DiaHorario, Persona.ObraSocial, DiaHorario.Horario"),
+                    Turnos = _workContainer.Turno.GetAll(x => x.DiaHorario.Dia.Date == today.Date, includeProperties: "Persona, DiaHorario, Persona.ObraSocial, DiaHorario.Horario"),
                     Horarios = _workContainer.DiaHorario.GetHorariosByDate(DateTime.UtcNow.AddHours(-3)),
                     ObrasSociales = _workContainer.ObraSocial.GetDropDownList(),
                 };
