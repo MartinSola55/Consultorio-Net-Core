@@ -301,16 +301,14 @@ namespace Consultorio.Controllers
                         {
                             await _workContainer.Email.SendConfirmTurno(turnoConfirmed);
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
-                            emailError = e.ToJson();
-                            //emailError = "Sin embargo, no se ha podido enviar el email con el recordatorio";
+                            emailError = "Sin embargo, no se ha podido enviar el email con el recordatorio";
                         }
                     }
                     var asad = _env;
                     return Json(new
                     {
-                        env = _env.ToJson(),
                         success = true,
                         emailError,
                         title = "Su turno se registró correctamente",
