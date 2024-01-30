@@ -109,7 +109,7 @@ namespace Consultorio.Data.Repository
         public async Task<List<GetByNameResponse>> GetByNombreApellido(string words)
         {
             var query = _db.Paciente
-                    .Where(x => (x.Nombre + " " + x.Apellido).Contains(words))
+                    .Where(x => (x.Nombre + " " + x.Apellido).Contains(words) || (x.Apellido + " " + x.Nombre).Contains(words))
                     .Include(x => x.ObraSocial)
                     .AsQueryable()
                     .AsNoTracking();
