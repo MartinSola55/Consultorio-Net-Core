@@ -33,7 +33,8 @@ namespace Consultorio.Controllers
             {
                 IndexViewModel viewModel = new()
                 {
-                    Pacientes = _workContainer.Paciente.GetAll(includeProperties: "ObraSocial")
+                    Pacientes = _workContainer.Paciente.GetAll(includeProperties: "ObraSocial"),
+                    ObrasSociales = _workContainer.ObraSocial.GetDropDownList(),
                 };
                 return View(viewModel);
             }
@@ -62,6 +63,37 @@ namespace Consultorio.Controllers
             catch (Exception)
             {
                 return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("Create")]
+        public IActionResult Create(Paciente paciente)
+        {
+            try
+            {
+                ModelState.Remove("paciente.HistoriasClinicas");
+                ModelState.Remove("paciente.ObraSocial");
+                if (!ModelState.IsValid)
+                    return CustomBadRequest(title: "Error al guardar el paciente", message: "Alguno de los datos ingresados no es correcto");
+
+                if (_workContainer.Paciente.IsDuplicated(paciente))
+                    return CustomBadRequest(title: "Error al guardar el paciente", message: "Ya existe un paciente con el mismo nombre, apellido y fecha de nacimiento");
+                
+                _workContainer.Paciente.Add(paciente);
+                _workContainer.Save();
+
+                return Json(new
+                {
+                    success = true,
+                    data = paciente.ID,
+                    message = "El paciente se guardó correctamente",
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "Error al guardar el paciente", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
             }
         }
 
@@ -95,7 +127,7 @@ namespace Consultorio.Controllers
                 return CustomBadRequest(title: "Error al buscar los pacientes", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
             }
         }
-        
+
         [HttpGet]
         [ActionName("SearchByName")]
         public async Task<IActionResult> SearchByName(string words)

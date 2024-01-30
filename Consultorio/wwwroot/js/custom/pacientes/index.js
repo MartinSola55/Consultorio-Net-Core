@@ -75,16 +75,49 @@ $(document).ready(function () {
     moment.locale('es');
     $('#DatePicker').daterangepicker({
         singleDatePicker: true,
-        showDropdowns: true
+        showDropdowns: true,
+        maxDate: moment().format('DD/MM/YYYY'),
     });
 
-    $('#DatePicker').val('');
+    $('#Paciente_FechaNacimiento').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        maxDate: moment().format('DD/MM/YYYY'),
+        drops: 'up',
+    });
+
+    $('#DatePicker, #Paciente_FechaNacimiento').val('');
 
     $('#DatePicker').on('change', function () {
         loadingRow();
         searchByDate();
     });
 });
+
+function openModal() {
+    $("#form-create input:not([type='hidden'])").val('');
+    $("#form-create select").val('');
+}
+
+function addPaciente() {
+    const form = $('#form-create');
+    $.ajax({
+        url: $(form).attr('action'),
+        method: $(form).attr('method'),
+        data: $(form).serialize(),
+        success: function (response) {
+            toastrSuccess(response.message);
+            $('#createModal').modal('hide');
+            setTimeout(() => {
+                window.location.href = "/Pacientes/Detalles/" + response.data;
+            }, 2000);
+        },
+        error: function (errorThrown) {
+            toastrWarning(errorThrown.responseJSON.message, errorThrown.responseJSON.title);
+        }
+    });
+
+}
 
 function searchByName() {
     const name = $('#NombreApellido').val();

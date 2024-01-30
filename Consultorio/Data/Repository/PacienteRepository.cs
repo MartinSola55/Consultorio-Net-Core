@@ -39,8 +39,12 @@ namespace Consultorio.Data.Repository
 
         public bool IsDuplicated(Paciente paciente)
         {
-            var dbObject = _db.Paciente.FirstOrDefault(x => x.Nombre.ToLower() == paciente.Nombre.ToLower() && x.ID != paciente.ID);
-            return dbObject != null;
+            var dbObject = _db.Paciente.Any(x =>
+                x.Nombre.ToLower() == paciente.Nombre.ToLower() &&
+                x.Apellido.ToLower() == paciente.Apellido.ToLower() &&
+                x.FechaNacimiento.Date == paciente.FechaNacimiento.Date &&
+                x.ID != paciente.ID);
+            return dbObject;
         }
 
         public long AddHC(HistoriaClinica historiaClinica)
@@ -88,7 +92,7 @@ namespace Consultorio.Data.Repository
 
         public void UpdateHC(HistoriaClinica historiaClinica)
         {
-            var hc = _db.HistoriaClinica.FirstOrDefault(x => x.ID == historiaClinica.ID) ?? throw new Exception("No se ha encontrado la historia clínica");
+            var hc = _db.HistoriaClinica.FirstOrDefault(x => x.ID == historiaClinica.ID) ?? throw new Exception("No se ha encontrado la historia clï¿½nica");
             var paciente = _db.Paciente.FirstOrDefault(x => x.ID == hc.PacienteID) ?? throw new Exception("No se ha encontrado el paciente");
             hc.UpdatedAt = DateTime.UtcNow.AddHours(-3);
             paciente.UpdatedAt = DateTime.UtcNow.AddHours(-3);
@@ -99,30 +103,28 @@ namespace Consultorio.Data.Repository
 
         public List<Paciente> GetByNacimiento(DateTime nacimiento)
         {
-            return [.. _db.Paciente.Where(x => x.FechaNacimiento.Date == nacimiento.Date).Include(x => x.ObraSocial).OrderBy(x => x.Apellido).ThenBy(x => x.Nombre) ];
+            return [.. _db.Paciente.Where(x => x.FechaNacimiento.Date == nacimiento.Date).Include(x => x.ObraSocial).OrderBy(x => x.Apellido).ThenBy(x => x.Nombre)];
         }
 
         public async Task<List<GetByNameResponse>> GetByNombreApellido(string words)
         {
-            List<string> nombres = [.. words.Split(' ')];
             var query = _db.Paciente
-                    .Where(x => nombres.Any(n => x.Nombre.StartsWith(n) || x.Nombre.Contains(n) || x.Nombre.EndsWith(n) ||
-                    x.Apellido.StartsWith(n) || x.Apellido.Contains(n) || x.Apellido.EndsWith(n)))
+                    .Where(x => (x.Nombre + " " + x.Apellido).Contains(words))
                     .Include(x => x.ObraSocial)
                     .AsQueryable()
                     .AsNoTracking();
             var list = await query.Select(x => new GetByNameResponse
-                {
-                    Id = x.ID,
-                    Nombre = x.Nombre,
-                    Apellido = x.Apellido,
-                    Telefono = x.Telefono ?? "-",
-                    Direccion = x.Direccion ?? "-",
-                    Localidad = x.Localidad ?? "-",
-                    FechaNacimiento = x.FechaNacimiento.ToString("dd/MM/yyyy"),
-                    ObraSocial = x.ObraSocial.Nombre,
-                    UpdatedAt = x.UpdatedAt.ToString("dd/MM/yyyy")
-                })
+            {
+                Id = x.ID,
+                Nombre = x.Nombre,
+                Apellido = x.Apellido,
+                Telefono = x.Telefono ?? "-",
+                Direccion = x.Direccion ?? "-",
+                Localidad = x.Localidad ?? "-",
+                FechaNacimiento = x.FechaNacimiento.ToString("dd/MM/yyyy"),
+                ObraSocial = x.ObraSocial.Nombre,
+                UpdatedAt = x.UpdatedAt.ToString("dd/MM/yyyy")
+            })
                 .OrderBy(x => x.Apellido)
                 .ThenBy(x => x.Nombre)
                 .ToListAsync();
