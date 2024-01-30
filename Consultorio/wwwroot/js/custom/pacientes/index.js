@@ -49,7 +49,7 @@ function fillTable(pacientes) {
     pacientes.forEach(item => {
         let row = `
                 <tr data-id="${item.id}">
-                    <td><a href="/Pacientes/Detalles/${item.id}" target="_blank">${item.nombre}</a></td>
+                    <td><a href="/Pacientes/Detalles/${item.id}">${item.nombre}</a></td>
                     <td>${item.apellido}</td>
                     <td>${item.direccion}</td>
                     <td>${item.localidad}</td>
