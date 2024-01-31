@@ -28,31 +28,31 @@
                             <div class="form-group col-12 col-sm-6">
                                 <input name="Turno.Persona.Nombre" type="text" class="form-control form-control-line">
                                 <span class="help-block text-muted">
-                                    <small><b>Nombre</b></small>
+                                    <small class="required"><b>Nombre</b></small>
                                 </span>
                             </div>
                             <div class="form-group col-12 col-sm-6">
                                 <input name="Turno.Persona.Apellido" type="text" class="form-control form-control-line">
                                 <span class="help-block text-muted">
-                                    <small><b>Apellido</b></small>
+                                    <small class="required"><b>Apellido</b></small>
                                 </span>
                             </div>
                             <div class="form-group col-12 col-sm-6">
                                 <input name="Turno.Persona.Telefono" type="tel" class="form-control form-control-line">
                                 <span class="help-block text-muted">
-                                    <small><b>Teléfono (sin 0 ni 15)</b></small>
+                                    <small class="required"><b>Teléfono (sin 0 ni 15)</b></small>
                                 </span>
                             </div>
                             <div class="form-group col-12 col-sm-6">
                                 @Html.DropDownListFor(x => x.Turno.Persona.ObraSocialID, Model.ObrasSociales, new { @class = "form-control form-control-line" })
                                 <span class="help-block text-muted">
-                                    <small><b>Obra social</b></small>
+                                    <small class="required"><b>Obra social</b></small>
                                 </span>
                             </div>
                             <div class="form-group col-12 col-sm-6">
                                 <input id="DatePicker" type="text" class="form-control form-control-line" placeholder="dd/mm/aaaa">
                                 <span class="help-block text-muted">
-                                    <small><b>Día</b></small>
+                                    <small class="required"><b>Día</b></small>
                                 </span>
                             </div>
                             <div class="form-group col-12 col-sm-6">
@@ -60,17 +60,17 @@
                                     <option value="">Primero seleccione un día</option>
                                 </select>
                                 <span class="help-block text-muted">
-                                    <small><b>Horario</b></small>
+                                    <small class="required"><b>Horario</b></small>
                                 </span>
                             </div>
-                            <div class="form-group col-12">
+                            <div class="form-group col-12 col-md-6">
                                 <input name="Turno.Persona.Correo" type="email" class="form-control form-control-line">
                                 <span class="help-block text-muted">
-                                    <small><b>Email (opcional)</b></small>
+                                    <small><b>Email (recibirás un recordatorio)</b></small>
                                 </span>
                             </div>
-                            <div class="col-12 d-flex justify-content-end">
-                                <button onclick="validateForm()" type="button" class="btn btn-dark">Reservar turno</button>
+                            <div class="col-12 col-md-6 d-flex justify-content-end align-items-end">
+                                <button onclick="validateForm()" type="button" class="btn btn-dark mt-auto">Reservar turno</button>
                             </div>
                         </div>
                     </form>
