@@ -26,13 +26,13 @@ namespace Consultorio.Controllers
         [HttpGet]
         [ActionName("Index")]
         [Authorize]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             try
             {
                 IndexViewModel viewModel = new()
                 {
-                    Horarios = _workContainer.Horario.GetAll()
+                    Horarios = await _workContainer.Horario.GetAllAsync()
                 };
                 return View(viewModel);
             }
@@ -46,12 +46,12 @@ namespace Consultorio.Controllers
         [HttpPost]
         [ActionName("Save")]
         [Authorize]
-        public IActionResult Save(string horarios, string dateFrom, string dateTo)
+        public async Task<IActionResult> Save(string horarios, string dateFrom, string dateTo)
         {
             try
             {
                 short[] ids = [.. horarios.Split(',').Select(x => short.Parse(x))];
-                _workContainer.DiaHorario.SaveNew(ids, dateFrom, dateTo);
+                await _workContainer.DiaHorario.SaveNew(ids, dateFrom, dateTo);
                 return Json(new
                 {
                     success = true,
@@ -66,7 +66,7 @@ namespace Consultorio.Controllers
 
         [HttpGet]
         [ActionName("GetDisponibles")]
-        public IActionResult GetDisponibles(string dateString)
+        public async Task<IActionResult> GetDisponibles(string dateString)
         {
             try
             {
@@ -77,7 +77,7 @@ namespace Consultorio.Controllers
                     DateTime today = DateTime.UtcNow.AddHours(-3);
                     if (date.Date < today.Date || date.Date > today.AddDays(Constants.MaximosDiasReserva).Date) throw new PolicyException("Debes ingresar una fecha válida");
                 }
-                var horarios = _workContainer.Horario.GetDisponibles(date);
+                var horarios = await _workContainer.Horario.GetDisponibles(date);
                 return Json(new
                 {
                     success = true,

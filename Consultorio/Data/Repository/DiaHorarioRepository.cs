@@ -14,18 +14,26 @@ namespace Consultorio.Data.Repository
     {
         private readonly ApplicationDbContext _db = db;
 
-        public void SoftDelete(long id)
+        public async Task SoftDelete(long id)
         {
-            var dbObject = _db.DiaHorario.First(x => x.ID == id) ?? throw new Exception("No se ha encontrado el día");
+            var dbObject = await _db
+                .DiaHorario
+                .FirstAsync(x => x.ID == id) ?? throw new Exception("No se ha encontrado el día");
+
             dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        public List<DiaHorario> GetHorariosByDate(DateTime date)
+        public async Task<List<DiaHorario>> GetHorariosByDate(DateTime date)
         {
             List<DiaHorario> dias = [];
-            List<DiaHorario> diaHorarios = [.. _db.DiaHorario.Where(x => x.Dia.Date == date.Date).Include(x => x.Horario)];
-            foreach (Horario horario in _db.Horario.ToList())
+            List<DiaHorario> diaHorarios = await _db
+                .DiaHorario
+                .Where(x => x.Dia.Date == date.Date)
+                .Include(x => x.Horario)
+                .ToListAsync();
+
+            foreach (Horario horario in await _db.Horario.ToListAsync())
             {
                 if (diaHorarios.Any(x => x.HorarioID == horario.ID))
                 {
@@ -44,43 +52,46 @@ namespace Consultorio.Data.Repository
             return dias;
         }
 
-        public void SaveNew(short[] ids, string dateFrom, string dateTo)
+        public async Task SaveNew(short[] ids, string dateFrom, string dateTo)
         {
-            try
-            {
-                DateTime dateFromParsed = DateTime.Parse(dateFrom);
-                DateTime dateToParsed = DateTime.Parse(dateTo);
-                if (dateFromParsed > dateToParsed) throw new Exception("La fecha de inicio no puede ser mayor a la fecha de fin");
-                if (ids.Length == 0) throw new Exception("Debe seleccionar al menos un horario");
+            DateTime dateFromParsed = DateTime.Parse(dateFrom);
+            DateTime dateToParsed = DateTime.Parse(dateTo);
+            if (dateFromParsed > dateToParsed) throw new Exception("La fecha de inicio no puede ser mayor a la fecha de fin");
+            if (ids.Length == 0) throw new Exception("Debe seleccionar al menos un horario");
 
-                List<DiaHorario> dias = [];
-                foreach (DateTime date in Enumerable.Range(0, 1 + dateToParsed.Subtract(dateFromParsed).Days).Select(offset => dateFromParsed.AddDays(offset)))
-                {
-                    if (date.DayOfWeek == DayOfWeek.Thursday || date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday) continue;
-                    foreach (short id in ids)
-                    {
-                        if (_db.DiaHorario.Any(x => x.Dia.Date == date.Date && x.HorarioID == id)) continue;
-                        dias.Add(new DiaHorario
-                        {
-                            Dia = date,
-                            HorarioID = id,
-                            Disponible = true,
-                        });
-                    }
-                }
-                _db.DiaHorario.AddRange(dias);
-                _db.SaveChanges();
-            }
-            catch (Exception)
+            List<DiaHorario> dias = [];
+            foreach (DateTime date in Enumerable.Range(0, 1 + dateToParsed.Subtract(dateFromParsed).Days).Select(offset => dateFromParsed.AddDays(offset)))
             {
-                throw;
+                if (date.DayOfWeek == DayOfWeek.Thursday || date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday) continue;
+                foreach (short id in ids)
+                {
+                    if (_db.DiaHorario.Any(x => x.Dia.Date == date.Date && x.HorarioID == id)) continue;
+                    dias.Add(new DiaHorario
+                    {
+                        Dia = date,
+                        HorarioID = id,
+                        Disponible = true,
+                    });
+                }
             }
+            await _db.DiaHorario.AddRangeAsync(dias);
+            await _db.SaveChangesAsync();
         }
 
-        public List<DiaHorario> GetHorariosDisponibles(DateTime date, long diaHorarioID, bool includeTurno = true)
+        public async Task<List<DiaHorario>> GetHorariosDisponibles(DateTime date, long diaHorarioID, bool includeTurno = true)
         {
-            var horariosDisponibles = _db.DiaHorario.Where(x => x.Dia.Date == date.Date && x.Disponible).Include(x => x.Horario).ToList();
-            var diaHorario = _db.DiaHorario.Where(x => x.ID == diaHorarioID).Include(x => x.Horario).First();
+            var horariosDisponibles = await _db
+                .DiaHorario
+                .Where(x => x.Dia.Date == date.Date && x.Disponible)
+                .Include(x => x.Horario)
+                .ToListAsync();
+
+            var diaHorario = await _db
+                .DiaHorario
+                .Where(x => x.ID == diaHorarioID)
+                .Include(x => x.Horario)
+                .FirstAsync();
+
             if (includeTurno && diaHorario is not null && !horariosDisponibles.Contains(diaHorario))
                 horariosDisponibles.Add(diaHorario);
 

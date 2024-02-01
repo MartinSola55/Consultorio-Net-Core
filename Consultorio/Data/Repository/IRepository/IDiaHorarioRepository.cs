@@ -9,9 +9,9 @@ namespace Consultorio.Data.Repository.IRepository
 {
     public interface IDiaHorarioRepository : IRepository<DiaHorario>
     {
-        void SoftDelete(long id);
-        List<DiaHorario> GetHorariosByDate(DateTime date);
-        void SaveNew(short[] ids, string dateFrom, string dateTo);
-        List<DiaHorario> GetHorariosDisponibles(DateTime date, long diaHorarioID, bool includeTurno = true);
+        Task SoftDelete(long id);
+        Task<List<DiaHorario>> GetHorariosByDate(DateTime date);
+        Task SaveNew(short[] ids, string dateFrom, string dateTo);
+        Task<List<DiaHorario>> GetHorariosDisponibles(DateTime date, long diaHorarioID, bool includeTurno = true);
     }
 }

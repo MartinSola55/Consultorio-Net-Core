@@ -10,6 +10,6 @@ namespace Consultorio.Data.Repository.IRepository
 {
     public interface IApplicationUserRepository : IRepository<ApplicationUser>
     {
-        IdentityRole GetRole(string userID);
+        Task<IdentityRole> GetRole(string userID);
     }
 }

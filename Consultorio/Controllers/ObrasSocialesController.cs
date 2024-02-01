@@ -23,13 +23,13 @@ namespace Consultorio.Controllers
 
         [HttpGet]
         [ActionName("Index")]
-        public IActionResult Index()
+        public  async Task<IActionResult> Index()
         {
             try
             {
                 IndexViewModel viewModel = new()
                 {
-                    ObraSociales = _workContainer.ObraSocial.GetAll().OrderByDescending(x => x.Nombre),
+                    ObraSociales = await _workContainer.ObraSocial.GetAllAsync(orderBy: x => x.OrderByDescending(y => y.Nombre)),
                 };
 
                 return View(viewModel);
@@ -43,14 +43,14 @@ namespace Consultorio.Controllers
         [HttpPost]
         [ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(IndexViewModel viewModel)
+        public async Task<IActionResult> Create(IndexViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     ObraSocial obraSocial = viewModel.NewObraSocial;
-                    if (_workContainer.ObraSocial.IsDuplicated(obraSocial))
+                    if (await _workContainer.ObraSocial.IsDuplicated(obraSocial))
                     {
                         return BadRequest(new
                         {
@@ -59,8 +59,8 @@ namespace Consultorio.Controllers
                             message = "Ya existe otra con el mismo nombre",
                         });
                     }
-                    _workContainer.ObraSocial.Add(obraSocial);
-                    _workContainer.Save();
+                    await _workContainer.ObraSocial.AddAsync(obraSocial);
+                    await _workContainer.SaveAsync();
 
                     object data = new
                     {
@@ -86,7 +86,7 @@ namespace Consultorio.Controllers
         [HttpPost]
         [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(IndexViewModel viewModel)
+        public async Task<IActionResult> Edit(IndexViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -94,7 +94,7 @@ namespace Consultorio.Controllers
                 {
                     ObraSocial obraSocial = viewModel.NewObraSocial;
 
-                    if (_workContainer.ObraSocial.IsDuplicated(obraSocial))
+                    if (await _workContainer.ObraSocial.IsDuplicated(obraSocial))
                     {
                         return BadRequest(new
                         {
@@ -104,7 +104,7 @@ namespace Consultorio.Controllers
                         });
                     }
 
-                    _workContainer.ObraSocial.Update(obraSocial);
+                    await _workContainer.ObraSocial.Update(obraSocial);
                     return Json(new
                     {
                         success = true,
@@ -123,11 +123,11 @@ namespace Consultorio.Controllers
         [HttpPost]
         [ActionName("SoftDelete")]
         [ValidateAntiForgeryToken]
-        public IActionResult SoftDelete(long id)
+        public async Task<IActionResult> SoftDelete(long id)
         {
             try
             {
-                _workContainer.ObraSocial.SoftDelete(id);
+                await _workContainer.ObraSocial.SoftDelete(id);
 
                 return Json(new
                 {
@@ -145,13 +145,13 @@ namespace Consultorio.Controllers
         [HttpPost]
         [ActionName("ChangeState")]
         [ValidateAntiForgeryToken]
-        public IActionResult ChangeState(long id)
+        public async Task<IActionResult> ChangeState(long id)
         {
             try
             {
-                _workContainer.ObraSocial.ChangeState(id);
+                await _workContainer.ObraSocial.ChangeState(id);
 
-                ObraSocial obraSocial = _workContainer.ObraSocial.GetFirstOrDefault(x => x.ID == id);
+                ObraSocial obraSocial = await _workContainer.ObraSocial.GetFirstOrDefaultAsync(x => x.ID == id);
 
                 return Json(new
                 {

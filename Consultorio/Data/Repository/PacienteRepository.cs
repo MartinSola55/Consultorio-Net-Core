@@ -16,49 +16,58 @@ namespace Consultorio.Data.Repository
     {
         private readonly ApplicationDbContext _db = db;
 
-        public void SoftDelete(long id)
+        public async Task SoftDelete(long id)
         {
-            try
-            {
-                var dbObject = _db.Paciente.Include(x => x.HistoriasClinicas).First(x => x.ID == id) ?? throw new Exception("No se ha encontrado el paciente");
-                dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
-                dbObject.HistoriasClinicas.ToList().ForEach(x => x.DeletedAt = DateTime.UtcNow.AddHours(-3));
-                _db.SaveChanges();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            var dbObject = await _db
+                .Paciente
+                .Include(x => x.HistoriasClinicas)
+                .FirstAsync(x => x.ID == id) ?? throw new Exception("No se ha encontrado el paciente");
+
+            dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
+            dbObject.HistoriasClinicas.ToList().ForEach(x => x.DeletedAt = DateTime.UtcNow.AddHours(-3));
+
+            await _db.SaveChangesAsync();
         }
 
-        public void Update(Paciente paciente)
+        public async Task Update(Paciente paciente)
         {
-            var dbObject = _db.Paciente.First(x => x.ID == paciente.ID) ?? throw new Exception("No se ha encontrado la obra social");
-            _db.SaveChanges();
+            var dbObject = await _db
+                .Paciente
+                .FirstAsync(x => x.ID == paciente.ID) ?? throw new Exception("No se ha encontrado la obra social");
+
+            await _db.SaveChangesAsync();
         }
 
-        public bool IsDuplicated(Paciente paciente)
+        public Task<bool> IsDuplicated(Paciente paciente)
         {
-            var dbObject = _db.Paciente.Any(x =>
-                x.Nombre.ToLower() == paciente.Nombre.ToLower() &&
-                x.Apellido.ToLower() == paciente.Apellido.ToLower() &&
-                x.FechaNacimiento.Date == paciente.FechaNacimiento.Date &&
-                x.ID != paciente.ID);
+            var dbObject = _db
+                .Paciente
+                .AnyAsync(x =>
+                    x.Nombre.ToLower() == paciente.Nombre.ToLower() &&
+                    x.Apellido.ToLower() == paciente.Apellido.ToLower() &&
+                    x.FechaNacimiento.Date == paciente.FechaNacimiento.Date &&
+                    x.ID != paciente.ID);
+
             return dbObject;
         }
 
-        public long AddHC(HistoriaClinica historiaClinica)
+        public async Task<long> AddHC(HistoriaClinica historiaClinica)
         {
-            var paciente = _db.Paciente.FirstOrDefault(x => x.ID == historiaClinica.PacienteID) ?? throw new Exception("No se ha encontrado el paciente");
+            var paciente = await _db
+                .Paciente
+                .FirstAsync(x => x.ID == historiaClinica.PacienteID) ?? throw new Exception("No se ha encontrado el paciente");
+
             paciente.UpdatedAt = DateTime.UtcNow.AddHours(-3);
-            _db.HistoriaClinica.Add(historiaClinica);
-            _db.SaveChanges();
+            await _db.HistoriaClinica.AddAsync(historiaClinica);
+            await _db.SaveChangesAsync();
             return historiaClinica.ID;
         }
 
-        public void UpdateDatos(string datoToUpdate, string datoValue, long id)
+        public async Task UpdateDatos(string datoToUpdate, string datoValue, long id)
         {
-            Paciente paciente = _db.Paciente.FirstOrDefault(x => x.ID == id) ?? throw new Exception("No se ha encontrado el paciente");
+            Paciente paciente = await _db
+                .Paciente
+                .FirstAsync(x => x.ID == id) ?? throw new Exception("No se ha encontrado el paciente");
 
             switch (datoToUpdate)
             {
@@ -87,23 +96,35 @@ namespace Consultorio.Data.Repository
                     throw new Exception("No se ha encontrado el dato a actualizar");
             }
             paciente.UpdatedAt = DateTime.UtcNow.AddHours(-3);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        public void UpdateHC(HistoriaClinica historiaClinica)
+        public async Task UpdateHC(HistoriaClinica historiaClinica)
         {
-            var hc = _db.HistoriaClinica.FirstOrDefault(x => x.ID == historiaClinica.ID) ?? throw new Exception("No se ha encontrado la historia cl�nica");
-            var paciente = _db.Paciente.FirstOrDefault(x => x.ID == hc.PacienteID) ?? throw new Exception("No se ha encontrado el paciente");
-            hc.UpdatedAt = DateTime.UtcNow.AddHours(-3);
+            var hc = await _db
+                .HistoriaClinica
+                .FirstAsync(x => x.ID == historiaClinica.ID) ?? throw new Exception("No se ha encontrado la historia clínica");
+
+            var paciente = await _db
+                .Paciente
+                .FirstAsync(x => x.ID == hc.PacienteID) ?? throw new Exception("No se ha encontrado el paciente");
+
             paciente.UpdatedAt = DateTime.UtcNow.AddHours(-3);
+            hc.UpdatedAt = DateTime.UtcNow.AddHours(-3);
             hc.Descripcion = historiaClinica.Descripcion;
             hc.Fecha = historiaClinica.Fecha;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        public List<Paciente> GetByNacimiento(DateTime nacimiento)
+        public async Task<List<Paciente>> GetByNacimiento(DateTime nacimiento)
         {
-            return [.. _db.Paciente.Where(x => x.FechaNacimiento.Date == nacimiento.Date).Include(x => x.ObraSocial).OrderBy(x => x.Apellido).ThenBy(x => x.Nombre)];
+            return await _db
+                .Paciente
+                .Where(x => x.FechaNacimiento.Date == nacimiento.Date)
+                .Include(x => x.ObraSocial)
+                .OrderBy(x => x.Apellido)
+                    .ThenBy(x => x.Nombre)
+                .ToListAsync();
         }
 
         public async Task<List<GetByNameResponse>> GetByNombreApellido(string words)
@@ -129,6 +150,16 @@ namespace Consultorio.Data.Repository
                 .ThenBy(x => x.Nombre)
                 .ToListAsync();
             return list;
+        }
+
+        public async Task DeleteHC(long id)
+        {
+            var dbObject = await _db
+                .HistoriaClinica
+                .FirstAsync(x => x.ID == id) ?? throw new Exception("No se ha encontrado el paciente");
+
+            dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
+            await _db.SaveChangesAsync();
         }
     }
 }

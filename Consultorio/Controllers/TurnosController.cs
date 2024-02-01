@@ -11,7 +11,6 @@ namespace Consultorio.Controllers
     public class TurnosController(IWorkContainer workContainer, IWebHostEnvironment env) : Controller
     {
         private readonly IWorkContainer _workContainer = workContainer;
-        private readonly IWebHostEnvironment _env = env;
         private BadRequestObjectResult CustomBadRequest(string title, string message, string? error = null)
         {
             return BadRequest(new
@@ -28,16 +27,16 @@ namespace Consultorio.Controllers
         [HttpGet]
         [ActionName("Index")]
         [Authorize]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             try
             {
                 DateTime today = DateTime.UtcNow.AddHours(-3);
                 IndexViewModel viewModel = new()
                 {
-                    Turnos = _workContainer.Turno.GetAll(x => x.DiaHorario.Dia.Date == today.Date, includeProperties: "Persona, DiaHorario, Persona.ObraSocial, DiaHorario.Horario"),
-                    Horarios = _workContainer.DiaHorario.GetHorariosByDate(DateTime.UtcNow.AddHours(-3)),
-                    ObrasSociales = _workContainer.ObraSocial.GetDropDownList(),
+                    Turnos = await _workContainer.Turno.GetAllAsync(x => x.DiaHorario.Dia.Date == today.Date, includeProperties: "Persona, DiaHorario, Persona.ObraSocial, DiaHorario.Horario"),
+                    Horarios = await _workContainer.DiaHorario.GetHorariosByDate(DateTime.UtcNow.AddHours(-3)),
+                    ObrasSociales = await _workContainer.ObraSocial.GetDropDownList(),
                 };
                 return View(viewModel);
             }
@@ -51,13 +50,13 @@ namespace Consultorio.Controllers
         [HttpGet]
         [ActionName("SearchByDate")]
         [Authorize]
-        public IActionResult SearchByDate(string dateString)
+        public async Task<IActionResult> SearchByDate(string dateString)
         {
             try
             {
                 DateTime date = DateTime.Parse(dateString);
-                List<Turno> turnos = _workContainer.Turno.GetByDate(date);
-                List<DiaHorario> horarios = _workContainer.DiaHorario.GetHorariosByDate(date);
+                List<Turno> turnos = await _workContainer.Turno.GetByDate(date);
+                List<DiaHorario> horarios = await _workContainer.DiaHorario.GetHorariosByDate(date);
                 List<object> data = [];
                 foreach (DiaHorario diaHorario in horarios)
                 {
@@ -119,7 +118,7 @@ namespace Consultorio.Controllers
                 {
                     var newTurno = await _workContainer.Turno.CreateTurno(turno, byPaciente: false);
 
-                    object data = new
+                    var data = new
                     {
                         id = newTurno.ID,
                         nombre = newTurno.Persona.Nombre,
@@ -151,7 +150,7 @@ namespace Consultorio.Controllers
         [ValidateAntiForgeryToken]
         [ActionName("Update")]
         [Authorize]
-        public IActionResult Update(Turno turno)
+        public async Task<IActionResult> Update(Turno turno)
         {
             try
             {
@@ -160,11 +159,15 @@ namespace Consultorio.Controllers
                 ModelState.Remove("turno.Persona.ObraSocial");
                 if (ModelState.IsValid)
                 {
-                    var oldTurno = _workContainer.Turno.GetFirstOrDefault(x => x.ID == turno.ID, includeProperties: "DiaHorario.Horario");
+                    var oldTurno = await _workContainer
+                        .Turno
+                        .GetFirstOrDefaultAsync(x => x.ID == turno.ID, includeProperties: "DiaHorario.Horario");
+
                     var oldDiaHorarioID = oldTurno.DiaHorarioID;
                     var oldHora = oldTurno.DiaHorario.Horario.Hora.ToString("HH:mm");
-                    var newTurno = _workContainer.Turno.Update(turno);
-                    object data = new
+                    var newTurno = await _workContainer.Turno.Update(turno);
+
+                    var data = new
                     {
                         id = newTurno.ID,
                         nombre = newTurno.Persona.Nombre,
@@ -197,14 +200,21 @@ namespace Consultorio.Controllers
         [ValidateAntiForgeryToken]
         [ActionName("DeleteTurno")]
         [Authorize]
-        public IActionResult DeleteTurno(long diaHorarioID)
+        public async Task<IActionResult> DeleteTurno(long diaHorarioID)
         {
             try
             {
-                var turno = _workContainer.Turno.GetFirstOrDefault(x => x.ID == diaHorarioID);
-                _workContainer.Turno.SoftDelete(diaHorarioID);
-                var horario = _workContainer.DiaHorario.GetFirstOrDefault(x => x.ID == diaHorarioID, includeProperties: "Horario");
-                object data = new
+                var turno = await _workContainer
+                    .Turno
+                    .GetFirstOrDefaultAsync(x => x.ID == diaHorarioID);
+
+                await _workContainer.Turno.SoftDelete(diaHorarioID);
+
+                var horario = await _workContainer
+                    .DiaHorario
+                    .GetFirstOrDefaultAsync(x => x.ID == diaHorarioID, includeProperties: "Horario");
+
+                var data = new
                 {
                     id = horario.ID,
                     hora = horario.Horario.Hora.ToString("HH:mm"),
@@ -226,17 +236,17 @@ namespace Consultorio.Controllers
         [ValidateAntiForgeryToken]
         [ActionName("DeleteHorario")]
         [Authorize]
-        public IActionResult DeleteHorario(long diaHorarioID)
+        public async Task<IActionResult> DeleteHorario(long diaHorarioID)
         {
             try
             {
-                var horario = _workContainer.DiaHorario.GetFirstOrDefault(x => x.ID == diaHorarioID, includeProperties: "Horario");
-                object data = new
+                var horario = await _workContainer.DiaHorario.GetFirstOrDefaultAsync(x => x.ID == diaHorarioID, includeProperties: "Horario");
+                var data = new
                 {
                     id = horario.ID,
                     hora = horario.Horario.Hora.ToString("HH:mm"),
                 };
-                _workContainer.DiaHorario.SoftDelete(diaHorarioID);
+                await _workContainer.DiaHorario.SoftDelete(diaHorarioID);
                 return Json(new
                 {
                     success = true,
@@ -253,12 +263,12 @@ namespace Consultorio.Controllers
         [HttpGet]
         [ActionName("GetHorariosDisponibles")]
         [Authorize]
-        public IActionResult GetHorariosDisponibles(string dateString, long diaHorarioID)
+        public async Task<IActionResult> GetHorariosDisponibles(string dateString, long diaHorarioID)
         {
             try
             {
                 DateTime date = DateTime.Parse(dateString);
-                var horarios = _workContainer.DiaHorario.GetHorariosDisponibles(date, diaHorarioID);
+                var horarios = await _workContainer.DiaHorario.GetHorariosDisponibles(date, diaHorarioID);
 
                 return Json(new
                 {
@@ -307,7 +317,7 @@ namespace Consultorio.Controllers
                             emailError = "Sin embargo, no se ha podido enviar el email con el recordatorio";
                         }
                     }
-                    var asad = _env;
+
                     return Json(new
                     {
                         success = true,
@@ -370,17 +380,22 @@ namespace Consultorio.Controllers
 
         [HttpGet]
         [ActionName("GetTurnoByPaciente")]
-        public IActionResult GetTurnoByPaciente(string nombre, string apellido, string dateString)
+        public async Task<IActionResult> GetTurnoByPaciente(string nombre, string apellido, string dateString)
         {
             try
             {
                 DateTime date = DateTime.Parse(dateString);
-                var turno = _workContainer.Turno.GetTurnoByPaciente(nombre, apellido, date);
+                var turno = await _workContainer
+                    .Turno
+                    .GetTurnoByPaciente(nombre, apellido, date);
 
                 if (turno is null)
                     return CustomBadRequest(title: "No se encontró su turno", message: "Intente nuevamente o comuníquese telefónicamente");
 
-                var horarios = _workContainer.DiaHorario.GetHorariosDisponibles(turno.DiaHorario.Dia, turno.DiaHorarioID, includeTurno: false);
+                var horarios = await _workContainer
+                    .DiaHorario
+                    .GetHorariosDisponibles(turno.DiaHorario.Dia, turno.DiaHorarioID, includeTurno: false);
+
                 return Json(new
                 {
                     success = true,

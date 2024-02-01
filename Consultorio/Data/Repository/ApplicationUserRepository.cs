@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Consultorio.Data.Repository.IRepository;
 using Consultorio.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Consultorio.Data.Repository
 {
@@ -14,9 +15,11 @@ namespace Consultorio.Data.Repository
         private readonly ApplicationDbContext _db = db;
 
 
-        public IdentityRole GetRole(string userID)
+        public async Task<IdentityRole> GetRole(string userID)
         {
-            return _db.Roles.First(x => x.Id.Equals(_db.UserRoles.First(x => x.UserId.Equals(userID)).RoleId));
+            return await _db
+                .Roles
+                .FirstAsync(x => x.Id.Equals(_db.UserRoles.First(x => x.UserId.Equals(userID)).RoleId));
         }
     }
 }

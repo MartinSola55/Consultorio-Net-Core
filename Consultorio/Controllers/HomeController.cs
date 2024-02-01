@@ -14,14 +14,14 @@ namespace Consultorio.Controllers
 
         [HttpGet]
         [Display(Name = "Index")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             try
             {
                 IndexViewModel viewModel = new()
                 {
                     Turno = new Turno(),
-                    ObrasSociales = _workContainer.ObraSocial.GetDropDownList()
+                    ObrasSociales = await _workContainer.ObraSocial.GetDropDownList()
                 };
                 return View(viewModel);
             }

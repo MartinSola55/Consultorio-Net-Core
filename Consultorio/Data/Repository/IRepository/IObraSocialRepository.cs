@@ -9,10 +9,10 @@ namespace Consultorio.Data.Repository.IRepository
 {
     public interface IObraSocialRepository : IRepository<ObraSocial>
     {
-        void Update(ObraSocial obraSocial);
-        void SoftDelete(long id);
-        void ChangeState(long id);
-        bool IsDuplicated(ObraSocial obraSocial);
-        IEnumerable<SelectListItem> GetDropDownList();
+        Task Update(ObraSocial obraSocial);
+        Task SoftDelete(long id);
+        Task ChangeState(long id);
+        Task<bool> IsDuplicated(ObraSocial obraSocial);
+        Task<IEnumerable<SelectListItem>> GetDropDownList();
     }
 }

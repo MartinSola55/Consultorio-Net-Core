@@ -27,14 +27,14 @@ namespace Consultorio.Controllers
 
         [HttpGet]
         [ActionName("Index")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             try
             {
                 IndexViewModel viewModel = new()
                 {
-                    Pacientes = _workContainer.Paciente.GetAll(includeProperties: "ObraSocial"),
-                    ObrasSociales = _workContainer.ObraSocial.GetDropDownList(),
+                    Pacientes = await _workContainer.Paciente.GetAllAsync(includeProperties: "ObraSocial"),
+                    ObrasSociales = await _workContainer.ObraSocial.GetDropDownList(),
                 };
                 return View(viewModel);
             }
@@ -46,17 +46,17 @@ namespace Consultorio.Controllers
 
         [HttpGet]
         [ActionName("Detalles")]
-        public IActionResult Detalles(long id)
+        public async Task<IActionResult> Detalles(long id)
         {
             try
             {
-                var paciente = _workContainer.Paciente.GetFirstOrDefault(p => p.ID == id, includeProperties: "ObraSocial, HistoriasClinicas");
+                var paciente = await _workContainer.Paciente.GetFirstOrDefaultAsync(p => p.ID == id, includeProperties: "ObraSocial, HistoriasClinicas");
                 if (paciente is null) return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Error al obtener el paciente\nEl paciente no existe", ErrorCode = 404 });
 
                 DetallesViewModel viewModel = new()
                 {
                     Paciente = paciente,
-                    ObrasSociales = _workContainer.ObraSocial.GetDropDownList(),
+                    ObrasSociales = await _workContainer.ObraSocial.GetDropDownList(),
                 };
                 return View(viewModel);
             }
@@ -69,7 +69,7 @@ namespace Consultorio.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Create")]
-        public IActionResult Create(Paciente paciente)
+        public async Task<IActionResult> Create(Paciente paciente)
         {
             try
             {
@@ -78,11 +78,11 @@ namespace Consultorio.Controllers
                 if (!ModelState.IsValid)
                     return CustomBadRequest(title: "Error al guardar el paciente", message: "Alguno de los datos ingresados no es correcto");
 
-                if (_workContainer.Paciente.IsDuplicated(paciente))
+                if (await _workContainer.Paciente.IsDuplicated(paciente))
                     return CustomBadRequest(title: "Error al guardar el paciente", message: "Ya existe un paciente con el mismo nombre, apellido y fecha de nacimiento");
                 
-                _workContainer.Paciente.Add(paciente);
-                _workContainer.Save();
+                await _workContainer.Paciente.AddAsync(paciente);
+                await _workContainer.SaveAsync();
 
                 return Json(new
                 {
@@ -99,12 +99,12 @@ namespace Consultorio.Controllers
 
         [HttpGet]
         [ActionName("SearchByDate")]
-        public IActionResult SearchByDate(string date)
+        public async Task<IActionResult> SearchByDate(string date)
         {
             try
             {
                 DateTime nacimiento = DateTime.Parse(date);
-                List<Paciente> pacientes = _workContainer.Paciente.GetByNacimiento(nacimiento);
+                List<Paciente> pacientes = await _workContainer.Paciente.GetByNacimiento(nacimiento);
                 return Json(new
                 {
                     success = true,
@@ -117,7 +117,7 @@ namespace Consultorio.Controllers
                         Direccion = x.Direccion ?? "-",
                         Localidad = x.Localidad ?? "-",
                         FechaNacimiento = x.FechaNacimiento.ToString("dd/MM/yyyy"),
-                        ObraSocial = x.ObraSocialID != null ? x.ObraSocial.Nombre : "-",
+                        ObraSocial = x.ObraSocial.Nombre,
                         UpdatedAt = x.UpdatedAt.ToString("dd/MM/yyyy")
                     })
                 });
@@ -150,11 +150,11 @@ namespace Consultorio.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("UpdateDatos")]
-        public IActionResult UpdateDatos(string datoToUpdate, string datoValue, long pacienteID)
+        public async Task<IActionResult> UpdateDatos(string datoToUpdate, string datoValue, long pacienteID)
         {
             try
             {
-                _workContainer.Paciente.UpdateDatos(datoToUpdate, datoValue, pacienteID);
+                await _workContainer.Paciente.UpdateDatos(datoToUpdate, datoValue, pacienteID);
                 return Json(new
                 {
                     success = true,
@@ -170,11 +170,11 @@ namespace Consultorio.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("UpdateHC")]
-        public IActionResult UpdateHC(HistoriaClinica historiaClinica)
+        public async Task<IActionResult> UpdateHC(HistoriaClinica historiaClinica)
         {
             try
             {
-                _workContainer.Paciente.UpdateHC(historiaClinica);
+                await _workContainer.Paciente.UpdateHC(historiaClinica);
                 return Json(new
                 {
                     success = true,
@@ -190,11 +190,11 @@ namespace Consultorio.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("SaveHC")]
-        public IActionResult SaveHC(HistoriaClinica historiaClinica)
+        public async Task<IActionResult> SaveHC(HistoriaClinica historiaClinica)
         {
             try
             {
-                long id = _workContainer.Paciente.AddHC(historiaClinica);
+                long id = await _workContainer.Paciente.AddHC(historiaClinica);
                 return Json(new
                 {
                     success = true,
@@ -210,12 +210,33 @@ namespace Consultorio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ActionName("SoftDelete")]
-        public IActionResult SoftDelete(long id)
+        [ActionName("DeleteHC")]
+        public async Task<IActionResult> DeleteHC(long id)
         {
             try
             {
-                _workContainer.Paciente.SoftDelete(id);
+                await _workContainer.Paciente.DeleteHC(id);
+                return Json(new
+                {
+                    success = true,
+                    data = id,
+                    message = "La historia clínica se eliminó correctamente",
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "Error al eliminar la historia clínica", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("SoftDelete")]
+        public async Task<IActionResult> SoftDelete(long id)
+        {
+            try
+            {
+                await _workContainer.Paciente.SoftDelete(id);
                 return Json(new
                 {
                     success = true,

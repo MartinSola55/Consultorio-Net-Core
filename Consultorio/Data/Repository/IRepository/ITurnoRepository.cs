@@ -13,12 +13,12 @@ namespace Consultorio.Data.Repository.IRepository
 
 
 
-        Turno Update(Turno turno);
+        Task<Turno> Update(Turno turno);
         Task<Turno> UpdateByPaciente(Turno turno);
-        void SoftDelete(long id);
-        List<Turno> GetByDate(DateTime date);
+        Task SoftDelete(long id);
+        Task<List<Turno>> GetByDate(DateTime date);
         Task<Turno> CreateTurno(Turno turno, bool byPaciente = true);
-        bool CheckDuplicate(Turno turno);
-        Turno? GetTurnoByPaciente(string nombre, string apellido, DateTime date);
+        Task<bool> CheckDuplicate(Turno turno);
+        Task<Turno?> GetTurnoByPaciente(string nombre, string apellido, DateTime date);
     }
 }
