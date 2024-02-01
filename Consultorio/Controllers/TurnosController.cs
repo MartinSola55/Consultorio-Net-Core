@@ -8,7 +8,7 @@ using NuGet.Protocol;
 
 namespace Consultorio.Controllers
 {
-    public class TurnosController(IWorkContainer workContainer, IWebHostEnvironment env) : Controller
+    public class TurnosController(IWorkContainer workContainer) : Controller
     {
         private readonly IWorkContainer _workContainer = workContainer;
         private BadRequestObjectResult CustomBadRequest(string title, string message, string? error = null)
