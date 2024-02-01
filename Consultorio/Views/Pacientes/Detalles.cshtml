@@ -50,7 +50,7 @@
                                                             <p class="form-control-static d-flex flex-row" style="font-size: 20px">
                                                                 <b id="pacienteNombre">@Html.DisplayFor(x => x.Paciente.Nombre)</b>
                                                                 <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editDatos('Nombre', this)"><i class="bi bi-pencil-square"></i></button>
-                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Nombre', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Nombre', this)" style="display: none;"><i class="bi bi-check2-circle" style="font-size: 20px; color: limegreen"></i></button>
                                                                 <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
                                                             </p>
                                                         </div>
@@ -63,7 +63,7 @@
                                                             <p class="form-control-static d-flex flex-row" style="font-size: 20px">
                                                                 <b id="pacienteApellido">@Html.DisplayFor(x => x.Paciente.Apellido)</b>
                                                                 <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editDatos('Apellido', this)"><i class="bi bi-pencil-square"></i></button>
-                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Apellido', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Apellido', this)" style="display: none;"><i class="bi bi-check2-circle" style="font-size: 20px; color: limegreen"></i></button>
                                                                 <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
                                                             </p>
                                                         </div>
@@ -78,7 +78,7 @@
                                                             <p class="form-control-static d-flex flex-row">
                                                                 <b id="pacienteTelefono">@Html.DisplayFor(x => x.Paciente.Telefono)</b>
                                                                 <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editDatos('Telefono', this)"><i class="bi bi-pencil-square"></i></button>
-                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Telefono', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Telefono', this)" style="display: none;"><i class="bi bi-check2-circle" style="font-size: 20px; color: limegreen"></i></button>
                                                                 <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
                                                             </p>
                                                         </div>
@@ -91,7 +91,7 @@
                                                             <p class="form-control-static d-flex flex-row">
                                                                 <b id="pacienteDireccion">@Html.DisplayFor(x => x.Paciente.Direccion)</b>
                                                                 <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editDatos('Direccion', this)"><i class="bi bi-pencil-square"></i></button>
-                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Direccion', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Direccion', this)" style="display: none;"><i class="bi bi-check2-circle" style="font-size: 20px; color: limegreen"></i></button>
                                                                 <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
                                                             </p>
                                                         </div>
@@ -106,7 +106,7 @@
                                                             <p class="form-control-static d-flex flex-row">
                                                                 <b id="pacienteLocalidad">@Html.DisplayFor(x => x.Paciente.Localidad)</b>
                                                                 <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editDatos('Localidad', this)"><i class="bi bi-pencil-square"></i></button>
-                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Localidad', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('Localidad', this)" style="display: none;"><i class="bi bi-check2-circle" style="font-size: 20px; color: limegreen"></i></button>
                                                                 <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
                                                             </p>
                                                         </div>
@@ -119,7 +119,7 @@
                                                             <p class="form-control-static d-flex flex-row">
                                                                 <b id="pacienteObraSocial" data-id="@Model.Paciente.ObraSocialID">@(Model.Paciente.ObraSocial is not null ? Model.Paciente.ObraSocial.Nombre : "")</b>
                                                                 <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editObraSocial(this)"><i class="bi bi-pencil-square"></i></button>
-                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('ObraSocial', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('ObraSocial', this)" style="display: none;"><i class="bi bi-check2-circle" style="font-size: 20px; color: limegreen"></i></button>
                                                                 <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
                                                             </p>
                                                         </div>
@@ -134,7 +134,7 @@
                                                             <p class="form-control-static d-flex flex-row">
                                                                 <b id="pacienteFechaNacimiento">@Model.Paciente.FechaNacimiento.ToString("dd/MM/yyyy")</b>
                                                                 <button class="btn btn-sm waves-effect waves-light" type="button" onclick="editFechaNacimiento(this)"><i class="bi bi-pencil-square"></i></button>
-                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('FechaNacimiento', this)" style="display: none;"><i class="bi bi-check2-circle"></i></button>
+                                                                <button class="btn btn-sm waves-effect waves-light" type="button" onclick="saveDatos('FechaNacimiento', this)" style="display: none;"><i class="bi bi-check2-circle" style="font-size: 20px; color: limegreen"></i></button>
                                                                 <span class="spinner-border spinner-border-sm align-self-center ml-2" role="status" aria-hidden="true" style="display: none"></span>
                                                             </p>
                                                         </div>

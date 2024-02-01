@@ -33,7 +33,6 @@ namespace Consultorio.Controllers
             {
                 IndexViewModel viewModel = new()
                 {
-                    Pacientes = await _workContainer.Paciente.GetAllAsync(includeProperties: "ObraSocial"),
                     ObrasSociales = await _workContainer.ObraSocial.GetDropDownList(),
                 };
                 return View(viewModel);
@@ -154,6 +153,9 @@ namespace Consultorio.Controllers
         {
             try
             {
+                if (datoValue is null || datoValue == "")
+                    return CustomBadRequest(title: "Error al actualizar el campo", message: "El campo no puede estar vacío");
+
                 await _workContainer.Paciente.UpdateDatos(datoToUpdate, datoValue, pacienteID);
                 return Json(new
                 {
