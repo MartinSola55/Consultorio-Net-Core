@@ -206,7 +206,7 @@ namespace Consultorio.Controllers
             {
                 var turno = await _workContainer
                     .Turno
-                    .GetFirstOrDefaultAsync(x => x.ID == diaHorarioID);
+                    .GetFirstOrDefaultAsync(x => x.DiaHorarioID == diaHorarioID);
 
                 await _workContainer.Turno.SoftDelete(diaHorarioID);
 
