@@ -26,6 +26,7 @@ namespace Consultorio.Models
         [RegularExpression("^[0-9]+$", ErrorMessage = "Debes añadir un teléfono válido")]
         [AllowNull]
         [MaybeNull]
+        [Display(Name = "Teléfono")]
         public string? Telefono { set; get; }
 
         [Required(ErrorMessage = "Debes seleccionar una obra social")]
@@ -42,6 +43,7 @@ namespace Consultorio.Models
         [StringLength(50, ErrorMessage = "Debes añadir una dirección de menos de 50 caracteres")]
         [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s0-9.]+$", ErrorMessage = "Ingrese una dirección válida")]
         [MaybeNull]
+        [Display(Name = "Dirección")]
         public string? Direccion { get; set; }
 
         [Required(ErrorMessage = "Debes añadir una localidad")]
