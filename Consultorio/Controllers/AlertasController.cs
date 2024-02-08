@@ -25,9 +25,10 @@ namespace Consultorio.Controllers
         {
             try
             {
+                var alertas = await _workContainer.Alerta.GetAllAsync();
                 IndexViewModel viewModel = new()
                 {
-                    Alertas = await _workContainer.Alerta.GetAllAsync()
+                    Alertas = [.. alertas.OrderByDescending(a => a.CreatedAt)],
                 };
                 return View(viewModel);
             }
