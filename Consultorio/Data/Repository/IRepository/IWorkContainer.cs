@@ -15,6 +15,7 @@ namespace Consultorio.Data.Repository.IRepository
         IHorarioRepository Horario { get; }
         IPacienteRepository Paciente { get; }
         IEmailRepository Email { get; }
+        IAlertaRepository Alerta { get; }
 
         void BeginTransaction();
         void Commit();

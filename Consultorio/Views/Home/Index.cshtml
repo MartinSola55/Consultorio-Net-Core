@@ -20,6 +20,17 @@
                     <p class="mb-1"><i class="bi bi-info-circle"></i> Lunes, martes, miércoles y viernes de 09:00 a 13:00 hs.</p>
                     <p class="mb-1"><i class="bi bi-info-circle"></i> Si desea modificar su turno, ingrese a la sección "Modificar turno".</p>
                     <p class="mb-1"><i class="bi bi-info-circle"></i> Para cancelar un turno, comunicarse telefónicamente al 03404-420923 / 3404-520532.</p>
+                    @if (Model.Alertas.Any())
+                    {
+                        <hr />
+                        <div class="alert alert-warning">
+                            <ul class="mb-0 pl-2 pl-md-5">
+                                @foreach (var alerta in Model.Alertas) {
+                                    <li>@alerta.Mensaje</li>
+                                }
+                            </ul>
+                        </div>
+                    }
                     <hr class="pb-4" />
                     <form id="form-turno" method="post" asp-area="" asp-controller="Turnos" asp-action="CreateByPaciente" class="form-material">
                         @Html.AntiForgeryToken()

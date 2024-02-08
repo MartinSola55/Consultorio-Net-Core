@@ -13,7 +13,6 @@ namespace Consultorio.Controllers
         private readonly IWorkContainer _workContainer = workContainer;
 
         [HttpGet]
-        [Display(Name = "Index")]
         public async Task<IActionResult> Index()
         {
             try
@@ -21,7 +20,8 @@ namespace Consultorio.Controllers
                 IndexViewModel viewModel = new()
                 {
                     Turno = new Turno(),
-                    ObrasSociales = await _workContainer.ObraSocial.GetDropDownList()
+                    ObrasSociales = await _workContainer.ObraSocial.GetDropDownList(),
+                    Alertas = await _workContainer.Alerta.GetActivas()
                 };
                 return View(viewModel);
             }
@@ -32,7 +32,6 @@ namespace Consultorio.Controllers
         }
 
         [HttpGet]
-        [Display(Name = "Contacto")]
         public IActionResult Contacto()
         {
             try
@@ -46,7 +45,6 @@ namespace Consultorio.Controllers
         }
 
         [HttpGet]
-        [Display(Name = "ModificarTurno")]
         public IActionResult ModificarTurno()
         {
             try

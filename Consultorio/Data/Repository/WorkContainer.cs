@@ -24,6 +24,7 @@ namespace Consultorio.Data.Repository
             Horario = new HorarioRepository(_db);
             Paciente = new PacienteRepository(_db);
             Email = new EmailRepository(_db, _config, _env);
+            Alerta = new AlertaRepository(_db);
         }
 
         public IApplicationUserRepository ApplicationUser { get; private set; }
@@ -33,6 +34,7 @@ namespace Consultorio.Data.Repository
         public IHorarioRepository Horario { get; private set; }
         public IPacienteRepository Paciente { get; private set; }
         public IEmailRepository Email { get; private set; }
+        public IAlertaRepository Alerta { get; private set; }
 
         public void BeginTransaction()
         {

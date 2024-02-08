@@ -29,6 +29,8 @@ namespace Consultorio.Data
                 .HasQueryFilter(entity => entity.DeletedAt == null);
             modelBuilder.Entity<Turno>()
                 .HasQueryFilter(entity => entity.DeletedAt == null);
+            modelBuilder.Entity<Alerta>()
+                .HasQueryFilter(entity => entity.DeletedAt == null);
         }
 
         public DbSet<ApplicationUser> User { get; set; }
@@ -39,6 +41,7 @@ namespace Consultorio.Data
         public DbSet<Paciente> Paciente { get; set; }
         public DbSet<Persona> Persona { get; set; }
         public DbSet<Turno> Turno { get; set; }
+        public DbSet<Alerta> Alerta { get; set; }
     
     }
 }

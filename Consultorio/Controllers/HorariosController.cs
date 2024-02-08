@@ -23,8 +23,9 @@ namespace Consultorio.Controllers
             });
         }
 
+        #region Views
+
         [HttpGet]
-        [ActionName("Index")]
         [Authorize]
         public async Task<IActionResult> Index()
         {
@@ -43,8 +44,11 @@ namespace Consultorio.Controllers
 
         }
 
+        #endregion
+
+        #region Actions
+
         [HttpPost]
-        [ActionName("Save")]
         [Authorize]
         public async Task<IActionResult> Save(string horarios, string dateFrom, string dateTo)
         {
@@ -65,7 +69,6 @@ namespace Consultorio.Controllers
         }
 
         [HttpGet]
-        [ActionName("GetDisponibles")]
         public async Task<IActionResult> GetDisponibles(string dateString)
         {
             try
@@ -97,5 +100,7 @@ namespace Consultorio.Controllers
                 return CustomBadRequest(title: "Error al buscar los horarios", message: "No se han podido obtener los horarios disponibles", error: e.Message);
             }
         }
+        
+        #endregion
     }
 }

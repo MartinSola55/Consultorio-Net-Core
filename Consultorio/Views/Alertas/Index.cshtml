@@ -1,0 +1,116 @@
+﻿@model Consultorio.Models.ViewModels.Alertas.IndexViewModel
+@using System.Globalization
+@{
+    ViewData["Title"] = "Alertas";
+}
+
+<link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
+
+<script src="~/lib/datatables/datatables.min.js"></script>
+<script src="~/lib/moment/moment-with-locales.js"></script>
+<script src="~/js/custom/alertas/index.js"></script>
+
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Alertas</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
+                <li class="breadcrumb-item active">Alertas</li>
+            </ol>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="modalCreate" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div id="formContainer" class="modal-dialog">
+            <form method="POST" asp-area="" asp-controller="Alertas" asp-action="Create" id="form-create" autocomplete="off">
+                <input type="hidden" name="NewObraSocial.ID" value="" />
+                @Html.AntiForgeryToken()
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Agregar alerta</h4>
+                        <button type="button" class="close" id="btnCloseModalCreate" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-column">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="Alerta.Mensaje" class="mb-0"></label>
+                                        <textarea asp-for="Alerta.Mensaje" class="form-control" required rows="5"></textarea>
+                                        <span asp-validation-for="Alerta.Mensaje" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-column">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="Alerta.Desde" class="mb-0"></label>
+                                        <input asp-for="Alerta.Desde" class="form-control" required value="@DateTime.UtcNow.AddHours(-3).Date.ToString("yyyy-MM-dd")"/>
+                                        <span asp-validation-for="Alerta.Desde" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-column">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="Alerta.Hasta" class="mb-0"></label>
+                                        <input asp-for="Alerta.Hasta" class="form-control" required value="@DateTime.UtcNow.AddHours(-3).Date.ToString("yyyy-MM-dd")" />
+                                        <span asp-validation-for="Alerta.Hasta" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
+                        <button onclick="sendForm('create')" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-row justify-content-between">
+                        <h2 class="card-title">Listado de alertas</h2>
+                        <button type="button" onclick="add()" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar alerta</button>
+                    </div>
+                    <div class="table-responsive m-t-10">
+                        <table id="DataTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="col-6">Mensaje</th>
+                                    <th class="col-2">Desde</th>
+                                    <th class="col-2">Hasta</th>
+                                    <th class="col-2">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_body">
+                                @foreach (var item in Model.Alertas)
+                                {
+                                    <tr data-id="@item.ID">
+                                        <td>@Html.DisplayFor(x => item.Mensaje)</td>
+                                        <td>@item.Desde.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.Hasta.ToString("dd/MM/yyyy")</td>
+                                        <td class='d-flex flex-row justify-content-center'>
+                                            <button type='button' class='btn btn-outline-danger btn-rounded btn-sm ml-2' onclick='softDelete(@item.ID)'><i class='bi bi-trash'></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <form id="form-delete" method="POST" asp-area="" asp-controller="Alertas" asp-action="SoftDelete">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

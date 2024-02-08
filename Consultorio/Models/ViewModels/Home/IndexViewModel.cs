@@ -6,5 +6,6 @@ namespace Consultorio.Models.ViewModels.Home
     {
         public Turno Turno { get; set; } = new Turno();
         public IEnumerable<SelectListItem> ObrasSociales { get; set; } = [];
+        public List<Alerta> Alertas = [];
     }
 }

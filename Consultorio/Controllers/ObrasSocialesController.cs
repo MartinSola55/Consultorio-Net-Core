@@ -21,8 +21,9 @@ namespace Consultorio.Controllers
             });
         }
 
+        #region Views
+
         [HttpGet]
-        [ActionName("Index")]
         public  async Task<IActionResult> Index()
         {
             try
@@ -40,8 +41,11 @@ namespace Consultorio.Controllers
             }
         }
 
+        #endregion
+
+        #region Actions
+
         [HttpPost]
-        [ActionName("Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(IndexViewModel viewModel)
         {
@@ -84,7 +88,6 @@ namespace Consultorio.Controllers
         }
 
         [HttpPost]
-        [ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(IndexViewModel viewModel)
         {
@@ -121,7 +124,6 @@ namespace Consultorio.Controllers
         }
 
         [HttpPost]
-        [ActionName("SoftDelete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SoftDelete(long id)
         {
@@ -143,7 +145,6 @@ namespace Consultorio.Controllers
         }
 
         [HttpPost]
-        [ActionName("ChangeState")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeState(long id)
         {
@@ -165,6 +166,8 @@ namespace Consultorio.Controllers
                 return CustomBadRequest(title: "Error al deshabilitar la obra social", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
             }
         }
+
+        #endregion
 
     }
 }

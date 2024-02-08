@@ -25,8 +25,9 @@ namespace Consultorio.Controllers
             });
         }
 
+        #region Views
+
         [HttpGet]
-        [ActionName("Index")]
         public async Task<IActionResult> Index()
         {
             try
@@ -44,7 +45,6 @@ namespace Consultorio.Controllers
         }
 
         [HttpGet]
-        [ActionName("Detalles")]
         public async Task<IActionResult> Detalles(long id)
         {
             try
@@ -65,9 +65,12 @@ namespace Consultorio.Controllers
             }
         }
 
+        #endregion
+
+        #region Actions
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ActionName("Create")]
         public async Task<IActionResult> Create(Paciente paciente)
         {
             try
@@ -79,7 +82,7 @@ namespace Consultorio.Controllers
 
                 if (await _workContainer.Paciente.IsDuplicated(paciente))
                     return CustomBadRequest(title: "Error al guardar el paciente", message: "Ya existe un paciente con el mismo nombre, apellido y fecha de nacimiento");
-                
+
                 await _workContainer.Paciente.AddAsync(paciente);
                 await _workContainer.SaveAsync();
 
@@ -97,7 +100,6 @@ namespace Consultorio.Controllers
         }
 
         [HttpGet]
-        [ActionName("SearchByDate")]
         public async Task<IActionResult> SearchByDate(string date)
         {
             try
@@ -128,7 +130,6 @@ namespace Consultorio.Controllers
         }
 
         [HttpGet]
-        [ActionName("SearchByName")]
         public async Task<IActionResult> SearchByName(string words)
         {
             try
@@ -148,7 +149,6 @@ namespace Consultorio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ActionName("UpdateDatos")]
         public async Task<IActionResult> UpdateDatos(string datoToUpdate, string datoValue, long pacienteID)
         {
             try
@@ -171,7 +171,30 @@ namespace Consultorio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ActionName("UpdateHC")]
+        public async Task<IActionResult> SoftDelete(long id)
+        {
+            try
+            {
+                await _workContainer.Paciente.SoftDelete(id);
+                return Json(new
+                {
+                    success = true,
+                    data = id,
+                    message = "El paciente se eliminó correctamente",
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "Error al eliminar el paciente", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
+            }
+        }
+
+        #endregion
+
+        #region Historias Clinicas
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateHC(HistoriaClinica historiaClinica)
         {
             try
@@ -191,7 +214,6 @@ namespace Consultorio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ActionName("SaveHC")]
         public async Task<IActionResult> SaveHC(HistoriaClinica historiaClinica)
         {
             try
@@ -212,7 +234,6 @@ namespace Consultorio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ActionName("DeleteHC")]
         public async Task<IActionResult> DeleteHC(long id)
         {
             try
@@ -231,25 +252,7 @@ namespace Consultorio.Controllers
             }
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [ActionName("SoftDelete")]
-        public async Task<IActionResult> SoftDelete(long id)
-        {
-            try
-            {
-                await _workContainer.Paciente.SoftDelete(id);
-                return Json(new
-                {
-                    success = true,
-                    data = id,
-                    message = "El paciente se eliminó correctamente",
-                });
-            }
-            catch (Exception e)
-            {
-                return CustomBadRequest(title: "Error al eliminar el paciente", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
-            }
-        }
+        #endregion
+
     }
 }
