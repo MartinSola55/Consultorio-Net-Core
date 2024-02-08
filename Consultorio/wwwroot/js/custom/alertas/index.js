@@ -59,7 +59,17 @@ function sendForm(action) {
 
 function add() {
     $("#formContainer form input:not([type='hidden']").val("");
+    $("#hasta").attr("disabled", true)
 };
+
+function changeDesde(input) {
+    const hasta = $("#hasta");
+    hasta.attr("min", input.value);
+    if (hasta.val() < input.value) {
+        hasta.val(input.value);
+    }
+    hasta.attr("disabled", false);
+}
 
 $(document).ready(function () {
     $('#DataTable').DataTable({

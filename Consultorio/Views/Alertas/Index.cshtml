@@ -2,6 +2,7 @@
 @using System.Globalization
 @{
     ViewData["Title"] = "Alertas";
+    var today = @DateTime.UtcNow.AddHours(-3).Date.ToString("yyyy-MM-dd");
 }
 
 <link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
@@ -48,7 +49,7 @@
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <div class="col-12 mb-3">
                                         <label asp-for="Alerta.Desde" class="mb-0"></label>
-                                        <input asp-for="Alerta.Desde" class="form-control" required value="@DateTime.UtcNow.AddHours(-3).Date.ToString("yyyy-MM-dd")"/>
+                                        <input asp-for="Alerta.Desde" class="form-control" required min="@today" value="@today" onchange="changeDesde(this)" />
                                         <span asp-validation-for="Alerta.Desde" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -56,7 +57,7 @@
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <div class="col-12 mb-3">
                                         <label asp-for="Alerta.Hasta" class="mb-0"></label>
-                                        <input asp-for="Alerta.Hasta" class="form-control" required value="@DateTime.UtcNow.AddHours(-3).Date.ToString("yyyy-MM-dd")" />
+                                        <input asp-for="Alerta.Hasta" class="form-control" required disabled value="@today" id="hasta" />
                                         <span asp-validation-for="Alerta.Hasta" class="text-danger"></span>
                                     </div>
                                 </div>

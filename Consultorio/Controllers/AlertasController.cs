@@ -50,6 +50,9 @@ namespace Consultorio.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    if (alerta.Desde > alerta.Hasta)
+                        return CustomBadRequest(title: "Error al crear la alerta", message: "La fecha de inicio no puede ser mayor a la fecha de fin");
+
                     await _workContainer.Alerta.AddAsync(alerta);
                     await _workContainer.SaveAsync();
                     return Json(new 
