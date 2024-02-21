@@ -129,27 +129,25 @@ namespace Consultorio.Data.Repository
 
         public async Task<List<GetByNameResponse>> GetByNombreApellido(string words)
         {
-            var query = _db.Paciente
-                    .Where(x => (x.Nombre + " " + x.Apellido).Contains(words) || (x.Apellido + " " + x.Nombre).Contains(words))
-                    .Include(x => x.ObraSocial)
-                    .AsQueryable()
-                    .AsNoTracking();
-            var list = await query.Select(x => new GetByNameResponse
-            {
-                Id = x.ID,
-                Nombre = x.Nombre,
-                Apellido = x.Apellido,
-                Telefono = x.Telefono ?? "-",
-                Direccion = x.Direccion ?? "-",
-                Localidad = x.Localidad ?? "-",
-                FechaNacimiento = x.FechaNacimiento.ToString("dd/MM/yyyy"),
-                ObraSocial = x.ObraSocial.Nombre,
-                UpdatedAt = x.UpdatedAt.ToString("dd/MM/yyyy")
-            })
+            return await _db.Paciente
+                .Where(x => (x.Nombre + " " + x.Apellido).Contains(words) || (x.Apellido + " " + x.Nombre).Contains(words))
+                .Include(x => x.ObraSocial)
+                .Select(x => new GetByNameResponse
+                {
+                    Id = x.ID,
+                    Nombre = x.Nombre,
+                    Apellido = x.Apellido,
+                    Telefono = x.Telefono ?? "-",
+                    Direccion = x.Direccion ?? "-",
+                    Localidad = x.Localidad ?? "-",
+                    FechaNacimiento = x.FechaNacimiento.ToString("dd/MM/yyyy"),
+                    ObraSocial = x.ObraSocial.Nombre,
+                    UpdatedAt = x.UpdatedAt.ToString("dd/MM/yyyy")
+                })
                 .OrderBy(x => x.Apellido)
                 .ThenBy(x => x.Nombre)
+                .AsNoTracking()
                 .ToListAsync();
-            return list;
         }
 
         public async Task DeleteHC(long id)

@@ -8,12 +8,25 @@ using Consultorio.Data.Repository.IRepository;
 using Consultorio.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Policy;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Consultorio.Data.Repository
 {
     public class TurnoRepository(ApplicationDbContext db) : Repository<Turno>(db), ITurnoRepository
     {
         private readonly ApplicationDbContext _db = db;
+
+        private static string ToTitleCase(string text)
+        {
+            text = Regex.Replace(text, @"[^a-zA-Z\u00C0-\u017F\s]", string.Empty);
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(text.ToLower());
+        }
+        private static string ToNumber(string number)
+        {
+            number = Regex.Replace(number, @"[^0-9]", string.Empty);
+            return number;
+        }
 
         public async Task SoftDelete(long id)
         {
@@ -52,9 +65,9 @@ namespace Consultorio.Data.Repository
             newDiaHorario.UpdatedAt = DateTime.UtcNow.AddHours(-3);
 
             dbObject.UpdatedAt = DateTime.UtcNow.AddHours(-3);
-            dbObject.Persona.Nombre = turno.Persona.Nombre;
-            dbObject.Persona.Apellido = turno.Persona.Apellido;
-            dbObject.Persona.Telefono = turno.Persona.Telefono;
+            dbObject.Persona.Nombre = ToTitleCase(turno.Persona.Nombre);
+            dbObject.Persona.Apellido = ToTitleCase(turno.Persona.Apellido);
+            dbObject.Persona.Telefono = ToNumber(turno.Persona.Telefono);
             dbObject.Persona.ObraSocialID = turno.Persona.ObraSocialID;
             dbObject.Persona.UpdatedAt = DateTime.UtcNow.AddHours(-3);
             dbObject.DiaHorarioID = turno.DiaHorarioID;
@@ -93,6 +106,10 @@ namespace Consultorio.Data.Repository
 
             if (diaHorario.Dia.Date < today.Date || diaHorario.Dia.Date > today.AddDays(Constants.MaximosDiasReserva).Date)
                 throw new PolicyException("La fecha del turno no es válida");
+
+            turno.Persona.Nombre = ToTitleCase(turno.Persona.Nombre);
+            turno.Persona.Apellido = ToTitleCase(turno.Persona.Apellido);
+            turno.Persona.Telefono = ToNumber(turno.Persona.Telefono);
 
             await _db.Turno.AddAsync(turno);
 
