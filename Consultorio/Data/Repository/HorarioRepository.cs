@@ -20,12 +20,17 @@ namespace Consultorio.Data.Repository
             var currentHour = today.Hour;
             var currentMinute = today.Minute;
 
-            return await _db
+            var horarios = _db
                 .DiaHorario
                 .Include(x => x.Horario)
-                .Where(x => x.Dia.Date == date.Date && x.Disponible && (x.Horario.Hora.Hour > currentHour || (x.Horario.Hora.Hour == currentHour && x.Horario.Hora.Minute > currentMinute)))
+                .Where(x => x.Dia.Date == date.Date && x.Disponible)
                 .OrderBy(x => x.Horario.Hora)
-                .ToListAsync();
+                .AsQueryable();
+
+            if (date.Date == today.Date)
+                horarios = horarios.Where(x => x.Horario.Hora.Hour > currentHour || (x.Horario.Hora.Hour == currentHour && x.Horario.Hora.Minute > currentMinute));
+
+            return await horarios.ToListAsync();
         }
     }
 }
