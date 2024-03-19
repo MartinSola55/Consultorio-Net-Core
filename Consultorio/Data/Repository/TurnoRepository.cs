@@ -28,6 +28,17 @@ namespace Consultorio.Data.Repository
             return number;
         }
 
+        private static bool IsValidHorario(DiaHorario diaHorario)
+        {
+            var today = DateTime.UtcNow.AddHours(-3);
+            var currentHour = today.Hour;
+            var currentMinute = today.Minute;
+
+            return !(diaHorario.Dia.Date < today.Date ||
+                diaHorario.Dia.Date > today.AddDays(Constants.MaximosDiasReserva).Date ||
+                (diaHorario.Dia.Date == today.Date && (diaHorario.Horario.Hora.Hour < currentHour || (diaHorario.Horario.Hora.Hour == currentHour && diaHorario.Horario.Hora.Minute < currentMinute))));
+        }
+
         public async Task SoftDelete(long id)
         {
             var dbObject = await _db
@@ -99,13 +110,13 @@ namespace Consultorio.Data.Repository
             if (byPaciente && await CheckDuplicate(turno))
                 throw new PolicyException("Ya tienes un turno para ese día");
 
-            var today = DateTime.UtcNow.AddHours(-3);
             var diaHorario = await _db
                 .DiaHorario
+                .Include(x => x.Horario)
                 .FirstAsync(x => x.ID == turno.DiaHorarioID) ?? throw new Exception("No se ha podido validar el turno");
 
-            if (diaHorario.Dia.Date < today.Date || diaHorario.Dia.Date > today.AddDays(Constants.MaximosDiasReserva).Date)
-                throw new PolicyException("La fecha del turno no es válida");
+            if (byPaciente && !IsValidHorario(diaHorario))
+                throw new PolicyException("El día o el horario del turno no son válidos");
 
             turno.Persona.Nombre = ToTitleCase(turno.Persona.Nombre);
             turno.Persona.Apellido = ToTitleCase(turno.Persona.Apellido);
@@ -166,14 +177,13 @@ namespace Consultorio.Data.Repository
             if (await CheckDuplicate(turno))
                 throw new PolicyException("Ya tienes un turno para ese día");
 
-            var today = DateTime.UtcNow.AddHours(-3);
             var diaHorario = await _db
                 .DiaHorario
                 .FirstAsync(x => x.ID == turno.DiaHorarioID) ?? throw new Exception("No se ha podido validar el turno");
 
             if (!diaHorario.Disponible)
                 throw new PolicyException("El turno ya no está disponible");
-            if (diaHorario.Dia.Date < today.Date || diaHorario.Dia.Date > today.AddDays(Constants.MaximosDiasReserva).Date)
+            if (!IsValidHorario(diaHorario))
                 throw new PolicyException("La fecha del turno no es válida");
 
             diaHorario.Disponible = false;
@@ -185,7 +195,7 @@ namespace Consultorio.Data.Repository
             dbObject.DiaHorario.UpdatedAt = DateTime.UtcNow.AddHours(-3);
 
             await _db.SaveChangesAsync();
-            
+
             return dbObject;
         }
     }

@@ -16,12 +16,21 @@ namespace Consultorio.Data.Repository
 
         public async Task<List<DiaHorario>> GetDisponibles(DateTime date)
         {
-            return await _db
+            var today = DateTime.UtcNow.AddHours(-3);
+            var currentHour = today.Hour;
+            var currentMinute = today.Minute;
+
+            var horarios = _db
                 .DiaHorario
                 .Include(x => x.Horario)
                 .Where(x => x.Dia.Date == date.Date && x.Disponible)
                 .OrderBy(x => x.Horario.Hora)
-                .ToListAsync();
+                .AsQueryable();
+
+            if (date.Date == today.Date)
+                horarios = horarios.Where(x => x.Horario.Hora.Hour > currentHour || (x.Horario.Hora.Hour == currentHour && x.Horario.Hora.Minute > currentMinute));
+
+            return await horarios.ToListAsync();
         }
     }
 }
