@@ -10,7 +10,6 @@ namespace Consultorio.Data.Repository.IRepository
 {
     public interface IPacienteRepository : IRepository<Paciente>
     {
-        Task Update(Paciente paciente);
         Task UpdateDatos(string datoToUpdate, string datoValue, long id);
         Task UpdateHC(HistoriaClinica historiaClinica);
         Task SoftDelete(long id);

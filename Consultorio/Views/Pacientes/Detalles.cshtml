@@ -213,6 +213,11 @@
             @Html.Hidden("Fecha", "")
             @Html.Hidden("Descripcion", "")
         </form>
+        
+        <form id="form-deleteHC" asp-area="" asp-controller="Pacientes" asp-action="DeleteHC" method="post">
+            @Html.AntiForgeryToken()
+            @Html.Hidden("id", "")
+        </form>
     </div>
 </div>
 

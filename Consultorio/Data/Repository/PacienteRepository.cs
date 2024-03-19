@@ -29,15 +29,6 @@ namespace Consultorio.Data.Repository
             await _db.SaveChangesAsync();
         }
 
-        public async Task Update(Paciente paciente)
-        {
-            var dbObject = await _db
-                .Paciente
-                .FirstAsync(x => x.ID == paciente.ID) ?? throw new Exception("No se ha encontrado la obra social");
-
-            await _db.SaveChangesAsync();
-        }
-
         public Task<bool> IsDuplicated(Paciente paciente)
         {
             var dbObject = _db

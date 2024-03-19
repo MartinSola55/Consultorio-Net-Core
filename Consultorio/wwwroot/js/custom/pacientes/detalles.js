@@ -103,7 +103,11 @@ function editHC(id) {
     $(`div[data-id=${id}]`).find('p').hide();
     $(`div[data-id=${id}]`).find('p').after(`<textarea class="form-control" rows="5" id="newHC${id}">${$(`div[data-id=${id}]`).find('p').text()}</textarea>`);
     $(`div[data-id=${id}]`).find('button').hide();
-    $(`div[data-id=${id}]`).append(`<div class="d-flex flex-row justify-content-end px-3 pb-3 btn-container"><button class="btn btn-sm btn-inverse" type="button" onclick="confirmEditionHC(${id})">Guardar</button></div>`);
+    $(`div[data-id=${id}]`).append(`
+    <div class="d-flex flex-row justify-content-between px-3 pb-3 btn-container">
+        <button class="btn btn-sm btn-danger" type="button" onclick="deleteHC(${id})">Eliminar</button>
+        <button class="btn btn-sm btn-inverse" type="button" onclick="confirmEditionHC(${id})">Guardar</button>
+    </div>`);
     $(`div[data-id=${id}]`).find('textarea').focus();
 
     $(`div[data-id=${id}]`).find('span.dateHC').hide();
@@ -112,7 +116,36 @@ function editHC(id) {
         singleDatePicker: true,
         showDropdowns: true
     });
+}
 
+function deleteHC(id) {
+    Swal.fire({
+        title: '¿Seguro deseas eliminar la historia clínica?',
+        text: "No podrás revertir esto",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#2f3d4a',
+        confirmButtonText: 'Borrar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = $('#form-deleteHC');
+            form.find('input[name="id"]').val(id);
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: $(form).serialize(),
+                success: function (response) {
+                    toastrSuccess(response.message, response.title);
+                    $(`div[data-id=${id}]`).parent().remove();
+                },
+                error: function (response) {
+                    toastrWarning(response.responseJSON.message, response.responseJSON.title);
+                }
+            });
+        }
+    });
 }
 
 function confirmEditionHC(id) {
