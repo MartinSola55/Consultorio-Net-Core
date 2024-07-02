@@ -158,10 +158,10 @@ namespace Consultorio.Data.Repository
                 .Include(x => x.DiaHorario)
                     .ThenInclude(x => x.Horario)
                 .FirstOrDefaultAsync(x =>
-                x.Persona.Nombre == nombre &&
-                x.Persona.Apellido == apellido &&
+                x.Persona.Nombre.ToLower() == nombre.ToLower() &&
+                x.Persona.Apellido.ToLower() == apellido.ToLower() &&
                 x.DiaHorario.Dia.Date == date.Date &&
-                x.DiaHorario.Dia.Date > today.Date &&
+                x.DiaHorario.Dia.Date >= today.Date &&
                 x.DiaHorario.Dia.Date <= today.AddDays(Constants.MaximosDiasReserva).Date);
         }
 
