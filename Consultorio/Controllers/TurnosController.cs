@@ -393,8 +393,8 @@ namespace Consultorio.Controllers
                     return CustomBadRequest(title: "No se encontró su turno", message: "Intente nuevamente o comuníquese telefónicamente");
 
                 var horarios = await _workContainer
-                    .DiaHorario
-                    .GetHorariosDisponibles(turno.DiaHorario.Dia, turno.DiaHorarioID, includeTurno: false);
+                    .Horario
+                    .GetDisponibles(turno.DiaHorario.Dia);
 
                 return Json(new
                 {

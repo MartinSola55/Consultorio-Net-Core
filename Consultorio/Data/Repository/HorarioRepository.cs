@@ -16,7 +16,7 @@ namespace Consultorio.Data.Repository
 
         public async Task<List<DiaHorario>> GetDisponibles(DateTime date)
         {
-            var today = DateTime.UtcNow.AddHours(-3);
+            var today = DateTime.UtcNow.AddHours(-30);
             var currentHour = today.Hour;
             var currentMinute = today.Minute;
 

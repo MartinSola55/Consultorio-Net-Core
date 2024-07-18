@@ -34,7 +34,7 @@ namespace Consultorio.Data.Repository
             var currentHour = today.Hour;
             var currentMinute = today.Minute;
 
-            return !(diaHorario.Dia.Date < today.Date ||
+            return (diaHorario.Dia.Date < today.Date ||
                 diaHorario.Dia.Date > today.AddDays(Constants.MaximosDiasReserva).Date ||
                 (diaHorario.Dia.Date == today.Date && (diaHorario.Horario.Hora.Hour < currentHour || (diaHorario.Horario.Hora.Hour == currentHour && diaHorario.Horario.Hora.Minute < currentMinute))));
         }
@@ -179,6 +179,7 @@ namespace Consultorio.Data.Repository
 
             var diaHorario = await _db
                 .DiaHorario
+                .Include(x => x.Horario)
                 .FirstAsync(x => x.ID == turno.DiaHorarioID) ?? throw new Exception("No se ha podido validar el turno");
 
             if (!diaHorario.Disponible)

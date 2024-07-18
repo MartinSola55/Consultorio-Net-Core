@@ -75,10 +75,11 @@ namespace Consultorio.Controllers
             {
                 DateTime date = DateTime.Parse(dateString);
 
-                if (User.Identity is not null && User.Identity.IsAuthenticated)
+                if (User.Identity is null || !User.Identity.IsAuthenticated)
                 {
                     DateTime today = DateTime.UtcNow.AddHours(-3);
-                    if (date.Date < today.Date || date.Date > today.AddDays(Constants.MaximosDiasReserva).Date) throw new PolicyException("Debes ingresar una fecha válida");
+                    if (date.Date < today.Date || date.Date > today.AddDays(Constants.MaximosDiasReserva).Date)
+                        throw new PolicyException("Debes ingresar una fecha válida");
                 }
                 var horarios = await _workContainer.Horario.GetDisponibles(date);
                 return Json(new
