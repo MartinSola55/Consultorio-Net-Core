@@ -1,4 +1,4 @@
-using System;
+using System; 
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,7 +34,7 @@ namespace Consultorio.Data.Repository
             var currentHour = today.Hour;
             var currentMinute = today.Minute;
 
-            return (diaHorario.Dia.Date < today.Date ||
+            return !(diaHorario.Dia.Date < today.Date ||
                 diaHorario.Dia.Date > today.AddDays(Constants.MaximosDiasReserva).Date ||
                 (diaHorario.Dia.Date == today.Date && (diaHorario.Horario.Hora.Hour < currentHour || (diaHorario.Horario.Hora.Hour == currentHour && diaHorario.Horario.Hora.Minute < currentMinute))));
         }
