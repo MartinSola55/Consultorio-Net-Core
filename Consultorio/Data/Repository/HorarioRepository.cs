@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Consultorio.Data.Repository.IRepository;
 using Consultorio.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +10,7 @@ namespace Consultorio.Data.Repository
 
         public async Task<List<DiaHorario>> GetDisponibles(DateTime date)
         {
-            var today = DateTime.UtcNow.AddHours(-30);
+            var today = DateTime.UtcNow.AddHours(-3);
             var currentHour = today.Hour;
             var currentMinute = today.Minute;
 
