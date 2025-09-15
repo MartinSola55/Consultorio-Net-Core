@@ -12,7 +12,6 @@ namespace Consultorio.Models.ViewModels.Home
                 Nombre = "Consultorio particular",
                 Ciuidad = "San Carlos Centro",
                 Direccion = "Almafuerte 384, San Carlos Centro",
-                Telefono = "03404-420923",
                 Celular = "5493404520532",
                 Url = "https://maps.app.goo.gl/cBzwrkopGtQCWQzj6",
             },
